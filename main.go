@@ -98,19 +98,18 @@ func main() {
 
 			fmt.Println()
 
-		default:
-			if width == 0 && len(seq) == 1 {
-				flushPrint()
-				// control code
-				fmt.Printf("Control code %q\n", seq)
-				break
-			} else if width == 0 {
-				flushPrint()
-				fmt.Printf("Unknown %q\n", seq)
-				break
-			}
+		case width == 0 && len(seq) == 1:
+			flushPrint()
+			// control code
+			fmt.Printf("Control code %q\n", seq)
 
+		case width > 0:
+			// Text
 			buf.WriteString(seq)
+
+		default:
+			flushPrint()
+			fmt.Printf("Unknown %q\n", seq)
 		}
 
 		in = in[n:]
