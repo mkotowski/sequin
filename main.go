@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/charmbracelet/x/ansi"
 )
 
 func main() {
@@ -33,6 +35,10 @@ func main() {
 
 		for _, desc := range parse(seq) {
 			fmt.Println(desc)
+		}
+
+		if txt := ansi.Strip(seq); strings.TrimSpace(txt) != "" {
+			fmt.Println(txt)
 		}
 
 	}
@@ -401,6 +407,11 @@ func parse(seq string) []string {
 		r = append(r, "CSI m: Reset Style")
 	}
 
+	// Parse SGR (Select Graphic Rendition) sequences
+	if ok, params := extract(seq, `\x1b\[(\d*(?:;\d*)*)m`); ok {
+		r = append(r, parseSGR(params)...)
+	}
+
 	return r
 }
 
@@ -517,5 +528,98 @@ func describeClipboard(c string) string {
 		return "primary"
 	default:
 		return "unknown"
+	}
+}
+
+func parseSGR(params string) []string {
+	var r []string
+	if params == "" {
+		return []string{"CSI m: Reset all attributes"}
+	}
+	for _, param := range strings.Split(params, ";") {
+		switch param {
+		case "0":
+			r = append(r, "CSI 0m: Reset all attributes")
+		case "1":
+			r = append(r, "CSI 1m: Set bold")
+		case "2":
+			r = append(r, "CSI 2m: Set faint")
+		case "3":
+			r = append(r, "CSI 3m: Set italic")
+		case "4":
+			r = append(r, "CSI 4m: Set underline")
+		case "5":
+			r = append(r, "CSI 5m: Set slow blink")
+		case "6":
+			r = append(r, "CSI 6m: Set rapid blink")
+		case "7":
+			r = append(r, "CSI 7m: Set reverse video")
+		case "8":
+			r = append(r, "CSI 8m: Set concealed")
+		case "9":
+			r = append(r, "CSI 9m: Set crossed-out")
+		case "21":
+			r = append(r, "CSI 21m: Set double underline")
+		case "22":
+			r = append(r, "CSI 22m: Reset bold and faint")
+		case "23":
+			r = append(r, "CSI 23m: Reset italic")
+		case "24":
+			r = append(r, "CSI 24m: Reset underline")
+		case "25":
+			r = append(r, "CSI 25m: Reset blink")
+		case "27":
+			r = append(r, "CSI 27m: Reset reverse video")
+		case "28":
+			r = append(r, "CSI 28m: Reset concealed")
+		case "29":
+			r = append(r, "CSI 29m: Reset crossed-out")
+		default:
+			if strings.HasPrefix(param, "3") && len(param) == 2 {
+				r = append(r, fmt.Sprintf("CSI %sm: Set foreground color to %s", param, colorName(param[1])))
+			} else if strings.HasPrefix(param, "4") && len(param) == 2 {
+				r = append(r, fmt.Sprintf("CSI %sm: Set background color to %s", param, colorName(param[1])))
+			} else if strings.HasPrefix(param, "38;5;") {
+				r = append(r, fmt.Sprintf("CSI 38;5;%sm: Set foreground color to 8-bit color %s", param[5:], param[5:]))
+			} else if strings.HasPrefix(param, "48;5;") {
+				r = append(r, fmt.Sprintf("CSI 48;5;%sm: Set background color to 8-bit color %s", param[5:], param[5:]))
+			} else if strings.HasPrefix(param, "38;2;") {
+				parts := strings.Split(param, ";")
+				if len(parts) == 5 {
+					r = append(r, fmt.Sprintf("CSI 38;2;%s;%s;%sm: Set foreground color to RGB(%s,%s,%s)", parts[2], parts[3], parts[4], parts[2], parts[3], parts[4]))
+				}
+			} else if strings.HasPrefix(param, "48;2;") {
+				parts := strings.Split(param, ";")
+				if len(parts) == 5 {
+					r = append(r, fmt.Sprintf("CSI 48;2;%s;%s;%sm: Set background color to RGB(%s,%s,%s)", parts[2], parts[3], parts[4], parts[2], parts[3], parts[4]))
+				}
+			} else {
+				r = append(r, fmt.Sprintf("CSI %sm: Unknown SGR parameter", param))
+			}
+		}
+	}
+	return r
+}
+
+func colorName(c byte) string {
+	switch c {
+	case '0':
+		return "Black"
+	case '1':
+		return "Red"
+	case '2':
+		return "Green"
+	case '3':
+		return "Yellow"
+	case '4':
+		return "Blue"
+	case '5':
+		return "Magenta"
+	case '6':
+		return "Cyan"
+	case '7':
+		return "White"
+	default:
+		return "Unknown"
 	}
 }
