@@ -31,6 +31,17 @@ func handleCursor(cmd int) func(*ansi.Parser) {
 		case 'D':
 			// CUB - Cursor Back
 			fmt.Printf("Cursor left %d", count)
+		case 'E':
+			fmt.Printf("Cursor next line %d", count)
+		case 'F':
+			fmt.Printf("Cursor previous line %d", count)
+		case 'H':
+			row := count
+			col := 1
+			if parser.ParamsLen > 1 {
+				col = parser.Params[1]
+			}
+			fmt.Printf("CSI %d;%d H: Set cursor position row=%[1]d col=%[2]d", row, col)
 		}
 	}
 }

@@ -1,6 +1,10 @@
 package main
 
-import "github.com/charmbracelet/x/ansi"
+import (
+	"fmt"
+
+	"github.com/charmbracelet/x/ansi"
+)
 
 var csiHandlers = map[int]func(*ansi.Parser){
 	'm':                      handleSgr,
@@ -8,6 +12,16 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'B':                      handleCursor('B'),
 	'C':                      handleCursor('C'),
 	'D':                      handleCursor('D'),
+	'E':                      handleCursor('E'),
+	'F':                      handleCursor('F'),
+	'H':                      handleCursor('H'),
+	'J':                      handleScreen('J'),
+	'K':                      handleLine('K'),
+	'L':                      handleLine('L'),
+	'M':                      handleLine('M'),
+	'S':                      handleLine('S'),
+	'T':                      handleLine('T'),
+	'c':                      printf("Request primary device attributes"),
 	'p' | '$'<<intermedShift: handleReqMode(false),
 	'p' | '?'<<markerShift | '$'<<intermedShift: handleReqMode(true),
 }
@@ -26,4 +40,10 @@ var oscHandlers = map[int]func(*ansi.Parser){
 	110: handleResetTerminalColor,
 	111: handleResetTerminalColor,
 	112: handleResetTerminalColor,
+}
+
+func printf(s string) func(*ansi.Parser) {
+	return func(*ansi.Parser) {
+		fmt.Printf(s)
+	}
 }
