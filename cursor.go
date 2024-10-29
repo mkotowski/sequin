@@ -54,6 +54,8 @@ func handleCursor(cmd int, isPrivate bool) func(*ansi.Parser) {
 			}
 		case 's':
 			fmt.Printf("Save cursor position")
+		case 'u':
+			fmt.Printf("Restore cursor position")
 		}
 	}
 }
