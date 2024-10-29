@@ -26,6 +26,17 @@ func handleScreen(cmd int) func(*ansi.Parser) {
 				"Erase entire screen",
 				"Erase entire display",
 			}, count))
+		case 'r':
+			top := count
+			bottom := 0
+			if parser.ParamsLen > 1 {
+				bottom = ansi.Param(parser.Params[1]).Param()
+			}
+			fmt.Printf(
+				"Set scrolling region to top=%d bottom=%d",
+				top,
+				bottom,
+			)
 		}
 	}
 }

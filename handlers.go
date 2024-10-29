@@ -8,13 +8,13 @@ import (
 
 var csiHandlers = map[int]func(*ansi.Parser){
 	'm':                      handleSgr,
-	'A':                      handleCursor('A'),
-	'B':                      handleCursor('B'),
-	'C':                      handleCursor('C'),
-	'D':                      handleCursor('D'),
-	'E':                      handleCursor('E'),
-	'F':                      handleCursor('F'),
-	'H':                      handleCursor('H'),
+	'A':                      handleCursor('A', false),
+	'B':                      handleCursor('B', false),
+	'C':                      handleCursor('C', false),
+	'D':                      handleCursor('D', false),
+	'E':                      handleCursor('E', false),
+	'F':                      handleCursor('F', false),
+	'H':                      handleCursor('H', false),
 	'J':                      handleScreen('J'),
 	'K':                      handleLine('K'),
 	'L':                      handleLine('L'),
@@ -28,6 +28,11 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'l' | '?'<<markerShift:                      handleReqMode('l', true),
 	'h':                                         handleReqMode('h', false),
 	'l':                                         handleReqMode('l', false),
+	'n' | '?'<<markerShift:                      handleCursor('n', true),
+	'n':                                         handleCursor('n', false),
+	'q' | '>'<<markerShift:                      handleXT,
+	'r':                                         handleScreen('r'),
+	's':                                         handleCursor('s', false),
 }
 
 var oscHandlers = map[int]func(*ansi.Parser){

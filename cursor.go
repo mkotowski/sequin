@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleCursor(cmd int) func(*ansi.Parser) {
+func handleCursor(cmd int, isPrivate bool) func(*ansi.Parser) {
 	return func(parser *ansi.Parser) {
 		var count int
 		if parser.ParamsLen > 0 {
@@ -41,7 +41,19 @@ func handleCursor(cmd int) func(*ansi.Parser) {
 			if parser.ParamsLen > 1 {
 				col = parser.Params[1]
 			}
-			fmt.Printf("CSI %d;%d H: Set cursor position row=%[1]d col=%[2]d", row, col)
+			fmt.Printf("Set cursor position row=%[1]d col=%[2]d", row, col)
+		case 'n':
+			if count != 6 {
+				fmt.Printf("unknown")
+				return
+			}
+			if isPrivate {
+				fmt.Printf("Request extended cursor position")
+			} else {
+				fmt.Printf("Request cursor position")
+			}
+		case 's':
+			fmt.Printf("Save cursor position")
 		}
 	}
 }
