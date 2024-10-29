@@ -20,7 +20,7 @@ func handleLine(parser *ansi.Parser) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'K':
-		fmt.Printf(must([]string{
+		fmt.Print(must([]string{
 			"Erase line right",
 			"Erase line left",
 			"Erase entire line",

@@ -15,7 +15,7 @@ func handleScreen(parser *ansi.Parser) {
 	cmd := ansi.Cmd(parser.Cmd)
 	switch cmd.Command() {
 	case 'J':
-		fmt.Printf(must([]string{
+		fmt.Print(must([]string{
 			"Erase screen above",
 			"Erase screen bellow",
 			"Erase entire screen",
