@@ -6,8 +6,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleReqMode(parser *ansi.Parser) {
-	// DECRQM - Request Mode
+func handleMode(parser *ansi.Parser) {
 	if parser.ParamsLen == 0 {
 		// Invalid, ignore
 		return
@@ -18,6 +17,7 @@ func handleReqMode(parser *ansi.Parser) {
 	isPrivate := cmd.Marker() == '?'
 	switch cmd.Command() {
 	case 'p':
+		// DECRQM - Request Mode
 		if isPrivate {
 			fmt.Printf("Request private mode %q", mode)
 		} else {

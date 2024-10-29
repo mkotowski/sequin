@@ -39,12 +39,12 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'T': handleLine,
 
 	// modes
-	'p' | '$'<<intermedShift:                    handleReqMode,
-	'p' | '?'<<markerShift | '$'<<intermedShift: handleReqMode,
-	'h' | '?'<<markerShift:                      handleReqMode,
-	'l' | '?'<<markerShift:                      handleReqMode,
-	'h':                                         handleReqMode,
-	'l':                                         handleReqMode,
+	'p' | '$'<<intermedShift:                    handleMode,
+	'p' | '?'<<markerShift | '$'<<intermedShift: handleMode,
+	'h' | '?'<<markerShift:                      handleMode,
+	'l' | '?'<<markerShift:                      handleMode,
+	'h':                                         handleMode,
+	'l':                                         handleMode,
 }
 
 var oscHandlers = map[int]func(*ansi.Parser){
@@ -63,8 +63,8 @@ var oscHandlers = map[int]func(*ansi.Parser){
 	112: handleResetTerminalColor,
 }
 
-func printf(s string) func(*ansi.Parser) {
+func printf(format string, v ...any) func(*ansi.Parser) {
 	return func(*ansi.Parser) {
-		fmt.Printf(s)
+		fmt.Printf(format, v...)
 	}
 }
