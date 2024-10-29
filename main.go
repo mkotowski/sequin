@@ -536,7 +536,9 @@ func parseSGR(params string) []string {
 	if params == "" {
 		return []string{"CSI m: Reset all attributes"}
 	}
-	for _, param := range strings.Split(params, ";") {
+	parts := strings.Split(params, ";")
+	for i := 0; i < len(parts); i++ {
+		param := parts[i]
 		switch param {
 		case "0":
 			r = append(r, "CSI 0m: Reset all attributes")
@@ -575,24 +577,30 @@ func parseSGR(params string) []string {
 		case "29":
 			r = append(r, "CSI 29m: Reset crossed-out")
 		default:
-			if strings.HasPrefix(param, "3") && len(param) == 2 {
+			if strings.HasPrefix(param, "48;5;") {
+				r = append(r, fmt.Sprintf("CSI 48;5;%sm: Set background color to 8-bit color %s", param[5:], param[5:]))
+			} else if strings.HasPrefix(param, "38;5;") {
+				r = append(r, fmt.Sprintf("CSI 38;5;%sm: Set foreground color to 8-bit color %s", param[5:], param[5:]))
+			} else if param == "48" && i+2 < len(parts) {
+				if parts[i+1] == "2" && i+4 < len(parts) {
+					r = append(r, fmt.Sprintf("CSI 48;2;%s;%s;%sm: Set background color to RGB(%s,%s,%s)", parts[i+2], parts[i+3], parts[i+4], parts[i+2], parts[i+3], parts[i+4]))
+					i += 4
+				} else if parts[i+1] == "5" && i+2 < len(parts) {
+					r = append(r, fmt.Sprintf("CSI 48;5;%sm: Set background color to 8-bit color %s", parts[i+2], parts[i+2]))
+					i += 2
+				}
+			} else if param == "38" && i+2 < len(parts) {
+				if parts[i+1] == "2" && i+4 < len(parts) {
+					r = append(r, fmt.Sprintf("CSI 38;2;%s;%s;%sm: Set foreground color to RGB(%s,%s,%s)", parts[i+2], parts[i+3], parts[i+4], parts[i+2], parts[i+3], parts[i+4]))
+					i += 4
+				} else if parts[i+1] == "5" && i+2 < len(parts) {
+					r = append(r, fmt.Sprintf("CSI 38;5;%sm: Set foreground color to 8-bit color %s", parts[i+2], parts[i+2]))
+					i += 2
+				}
+			} else if strings.HasPrefix(param, "3") && len(param) == 2 {
 				r = append(r, fmt.Sprintf("CSI %sm: Set foreground color to %s", param, colorName(param[1])))
 			} else if strings.HasPrefix(param, "4") && len(param) == 2 {
 				r = append(r, fmt.Sprintf("CSI %sm: Set background color to %s", param, colorName(param[1])))
-			} else if strings.HasPrefix(param, "38;5;") {
-				r = append(r, fmt.Sprintf("CSI 38;5;%sm: Set foreground color to 8-bit color %s", param[5:], param[5:]))
-			} else if strings.HasPrefix(param, "48;5;") {
-				r = append(r, fmt.Sprintf("CSI 48;5;%sm: Set background color to 8-bit color %s", param[5:], param[5:]))
-			} else if strings.HasPrefix(param, "38;2;") {
-				parts := strings.Split(param, ";")
-				if len(parts) == 5 {
-					r = append(r, fmt.Sprintf("CSI 38;2;%s;%s;%sm: Set foreground color to RGB(%s,%s,%s)", parts[2], parts[3], parts[4], parts[2], parts[3], parts[4]))
-				}
-			} else if strings.HasPrefix(param, "48;2;") {
-				parts := strings.Split(param, ";")
-				if len(parts) == 5 {
-					r = append(r, fmt.Sprintf("CSI 48;2;%s;%s;%sm: Set background color to RGB(%s,%s,%s)", parts[2], parts[3], parts[4], parts[2], parts[3], parts[4]))
-				}
 			} else {
 				r = append(r, fmt.Sprintf("CSI %sm: Unknown SGR parameter", param))
 			}
