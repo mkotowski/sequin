@@ -12,4 +12,6 @@ CSI 48;2;255;0;0m: Set background color to RGB(255,0,0)
 Mostly generated with AI/manual edits using Claude and
 [charmbracelet/x/ansi][ansi].
 
+This is very pre-alpha-do-not-use-yet state.
+
 [ansi]: https://pkg.go.dev/github.com/charmbracelet/x/ansi
