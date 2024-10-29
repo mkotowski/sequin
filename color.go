@@ -35,7 +35,6 @@ func handleResetTerminalColor(p *ansi.Parser) {
 		// Invalid, ignore
 		return
 	}
-
 	switch p.Cmd {
 	case 110:
 		fmt.Print("Reset foreground color")

@@ -12,7 +12,6 @@ func handleSgr(parser *ansi.Parser) {
 	if parser.ParamsLen == 0 {
 		str = "Reset style"
 	}
-
 	for i := 0; i < parser.ParamsLen; i++ {
 		param := ansi.Param(parser.Params[i])
 		if i > 0 {

@@ -13,7 +13,6 @@ func handleTitle(p *ansi.Parser) {
 		// Invalid, ignore
 		return
 	}
-
 	switch p.Cmd {
 	case 0:
 		fmt.Printf("Set icon name and window title to %s", parts[1])
