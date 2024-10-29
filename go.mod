@@ -1,4 +1,4 @@
-module github.com/caarlos0/sequin
+module github.com/charmbracelet/sequin
 
 go 1.22.8
 
