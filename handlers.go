@@ -22,8 +22,12 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'S':                      handleLine('S'),
 	'T':                      handleLine('T'),
 	'c':                      printf("Request primary device attributes"),
-	'p' | '$'<<intermedShift: handleReqMode(false),
-	'p' | '?'<<markerShift | '$'<<intermedShift: handleReqMode(true),
+	'p' | '$'<<intermedShift: handleReqMode('p', false),
+	'p' | '?'<<markerShift | '$'<<intermedShift: handleReqMode('p', true),
+	'h' | '?'<<markerShift:                      handleReqMode('h', true),
+	'l' | '?'<<markerShift:                      handleReqMode('l', true),
+	'h':                                         handleReqMode('h', false),
+	'l':                                         handleReqMode('l', false),
 }
 
 var oscHandlers = map[int]func(*ansi.Parser){
