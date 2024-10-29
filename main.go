@@ -43,7 +43,7 @@ func parse(seq string) []string {
 
 	// Request Kitty Keyboard
 	if is(seq, `\x1b\[?u`) {
-		r = append(r, "Request Kitty Keyboard")
+		r = append(r, "ESC [?u: Request Kitty Keyboard")
 	}
 
 	// Kitty Keyboard
@@ -51,8 +51,8 @@ func parse(seq string) []string {
 		parts := strings.Split(params, ";")
 		if len(parts) == 2 {
 			flags, mode := parts[0], parts[1]
-			r = append(r, fmt.Sprintf("Kitty Keyboard: flags=%s (%s), mode=%s (%s)",
-				flags, describeKittyFlags(flags),
+			r = append(r, fmt.Sprintf("ESC [=%s;%su: Kitty Keyboard: flags=%s (%s), mode=%s (%s)",
+				flags, mode, flags, describeKittyFlags(flags),
 				mode, describeKittyMode(mode)))
 		}
 	}
@@ -60,92 +60,92 @@ func parse(seq string) []string {
 	// Push Kitty Keyboard
 	if ok, flags := extract(seq, `\x1b\[>(\d*)u`); ok {
 		if flags == "" {
-			r = append(r, "Push Kitty Keyboard: flags=0 (Disable all features)")
+			r = append(r, "ESC [>u: Push Kitty Keyboard: flags=0 (Disable all features)")
 		} else {
-			r = append(r, fmt.Sprintf("Push Kitty Keyboard: flags=%s", flags))
+			r = append(r, fmt.Sprintf("ESC [>%su: Push Kitty Keyboard: flags=%s", flags, flags))
 		}
 	}
 
 	// Pop Kitty Keyboard
 	if ok, n := extract(seq, `\x1b\[<(\d*)u`); ok {
 		if n == "" {
-			r = append(r, "Pop Kitty Keyboard: n=1")
+			r = append(r, "ESC [<u: Pop Kitty Keyboard: n=1")
 		} else {
-			r = append(r, fmt.Sprintf("Pop Kitty Keyboard: n=%s", n))
+			r = append(r, fmt.Sprintf("ESC [<%su: Pop Kitty Keyboard: n=%s", n, n))
 		}
 	}
 
 	// cursor down
 	if ok, no := extract(seq, `\x1b\[(\d+)B`); ok {
-		r = append(r, fmt.Sprintf("Cursor down %s lines", no))
+		r = append(r, fmt.Sprintf("CSI %sB: Cursor down %s lines", no, no))
 	} else if is(seq, `\x1b\[B`) {
-		r = append(r, "Cursor down")
+		r = append(r, "CSI B: Cursor down 1 line")
 	}
 
 	// cursor up
 	if ok, no := extract(seq, `\x1b\[(\d+)A`); ok {
-		r = append(r, fmt.Sprintf("Cursor up %s lines", no))
+		r = append(r, fmt.Sprintf("CSI %sA: Cursor up %s lines", no, no))
 	} else if is(seq, `\x1b\[A`) {
-		r = append(r, "Cursor up")
+		r = append(r, "CSI A: Cursor up 1 line")
 	}
 
 	// cursor right
 	if ok, no := extract(seq, `\x1b\[(\d+)C`); ok {
-		r = append(r, fmt.Sprintf("Cursor right %s columns", no))
+		r = append(r, fmt.Sprintf("CSI %sC: Cursor right %s columns", no, no))
 	} else if is(seq, `\x1b\[C`) {
-		r = append(r, "Cursor right")
+		r = append(r, "CSI C: Cursor right 1 column")
 	}
 
 	// cursor left
 	if ok, no := extract(seq, `\x1b\[(\d+)D`); ok {
-		r = append(r, fmt.Sprintf("Cursor left %s columns", no))
+		r = append(r, fmt.Sprintf("CSI %sD: Cursor left %s columns", no, no))
 	} else if is(seq, `\x1b\[D`) {
-		r = append(r, "Cursor left")
+		r = append(r, "CSI D: Cursor left 1 column")
 	}
 
 	// save cursor position
 	if is(seq, `\x1b7`) {
-		r = append(r, "Save cursor position")
+		r = append(r, "ESC 7: Save cursor position")
 	}
 
 	// restore cursor position
 	if is(seq, `\x1b8`) {
-		r = append(r, "Restore cursor position")
+		r = append(r, "ESC 8: Restore cursor position")
 	}
 
 	// request cursor position
 	if is(seq, `\x1b\[6n`) {
-		r = append(r, "Request cursor position")
+		r = append(r, "CSI 6n: Request cursor position (CPR)")
 	}
 
 	// request extended cursor position
 	if is(seq, `\x1b\[?6n`) {
-		fmt.Println("Request extended cursor position")
+		r = append(r, "CSI ?6n: Request extended cursor position")
 	}
 
 	// move cursor to upper left corner (origin)
 	if is(seq, `\x1b\[1;1H`) {
-		r = append(r, "Move cursor to upper left corner (origin)")
+		r = append(r, "CSI 1;1H: Move cursor to upper left corner (origin)")
 	}
 
 	// save cursor position (CSI s)
 	if is(seq, `\x1b\[s`) {
-		r = append(r, "Save cursor position")
+		r = append(r, "CSI s: Save cursor position")
 	}
 
 	// restore cursor position (CSI u)
 	if is(seq, `\x1b\[u`) {
-		r = append(r, "Restore cursor position")
+		r = append(r, "CSI u: Restore cursor position")
 	}
 
 	// set cursor style
 	if ok, style := extract(seq, `\x1b\[(\d+) q`); ok {
-		r = append(r, fmt.Sprintf("Set cursor style: %s", cursorStyle(style)))
+		r = append(r, fmt.Sprintf("CSI %s q: Set cursor style: %s", style, cursorStyle(style)))
 	}
 
 	// set pointer shape
 	if ok, shape := extract(seq, `\x1b\]22;(.+)\x07`); ok {
-		r = append(r, fmt.Sprintf("Set pointer shape: %s", shape))
+		r = append(r, fmt.Sprintf("OSC 22;%s BEL: Set pointer shape: %s", shape, shape))
 	}
 
 	// clipboard operations
@@ -157,15 +157,15 @@ func parse(seq string) []string {
 
 			switch data {
 			case "":
-				r = append(r, fmt.Sprintf("Reset %s clipboard", describeClipboard(clipboardName)))
+				r = append(r, fmt.Sprintf("OSC 52;%s; BEL: Reset %s clipboard", clipboardName, describeClipboard(clipboardName)))
 			case "?":
-				r = append(r, fmt.Sprintf("Request %s clipboard", describeClipboard(clipboardName)))
+				r = append(r, fmt.Sprintf("OSC 52;%s;? BEL: Request %s clipboard", clipboardName, describeClipboard(clipboardName)))
 			default:
 				decodedData, err := base64.StdEncoding.DecodeString(data)
 				if err != nil {
-					r = append(r, fmt.Sprintf("Set %s clipboard: Invalid base64 data", describeClipboard(clipboardName)))
+					r = append(r, fmt.Sprintf("OSC 52;%s;%s BEL: Set %s clipboard: Invalid base64 data", clipboardName, data, describeClipboard(clipboardName)))
 				} else {
-					r = append(r, fmt.Sprintf("Set %s clipboard: %s", describeClipboard(clipboardName), string(decodedData)))
+					r = append(r, fmt.Sprintf("OSC 52;%s;%s BEL: Set %s clipboard: %s", clipboardName, data, describeClipboard(clipboardName), string(decodedData)))
 				}
 			}
 		}
@@ -173,39 +173,39 @@ func parse(seq string) []string {
 
 	// erase display
 	if ok, n := extract(seq, `\x1b\[(\d*)J`); ok {
-		r = append(r, fmt.Sprintf("Erase display: %s", eraseDisplayDescription(n)))
+		r = append(r, fmt.Sprintf("CSI %sJ: Erase display: %s", n, eraseDisplayDescription(n)))
 	}
 
 	// erase line
 	if ok, n := extract(seq, `\x1b\[(\d*)K`); ok {
-		r = append(r, fmt.Sprintf("Erase line: %s", eraseLineDescription(n)))
+		r = append(r, fmt.Sprintf("CSI %sK: Erase line: %s", n, eraseLineDescription(n)))
 	}
 
 	// scroll up
 	if ok, n := extract(seq, `\x1b\[(\d*)S`); ok {
-		r = append(r, fmt.Sprintf("Scroll up: %s lines", defaultOne(n)))
+		r = append(r, fmt.Sprintf("CSI %sS: Scroll up: %s lines", n, defaultOne(n)))
 	}
 
 	// scroll down
 	if ok, n := extract(seq, `\x1b\[(\d*)T`); ok {
-		r = append(r, fmt.Sprintf("Scroll down: %s lines", defaultOne(n)))
+		r = append(r, fmt.Sprintf("CSI %sT: Scroll down: %s lines", n, defaultOne(n)))
 	}
 
 	// insert line
 	if ok, n := extract(seq, `\x1b\[(\d*)L`); ok {
-		r = append(r, fmt.Sprintf("Insert %s blank line(s)", defaultOne(n)))
+		r = append(r, fmt.Sprintf("CSI %sL: Insert %s blank line(s)", n, defaultOne(n)))
 	}
 
 	// delete line
 	if ok, n := extract(seq, `\x1b\[(\d*)M`); ok {
-		r = append(r, fmt.Sprintf("Delete %s line(s)", defaultOne(n)))
+		r = append(r, fmt.Sprintf("CSI %sM: Delete %s line(s)", n, defaultOne(n)))
 	}
 
 	// set scrolling region
 	if ok, params := extract(seq, `\x1b\[(\d*;\d*)r`); ok {
 		parts := strings.Split(params, ";")
 		if len(parts) == 2 {
-			r = append(r, fmt.Sprintf("Set scrolling region: top=%s, bottom=%s", parts[0], parts[1]))
+			r = append(r, fmt.Sprintf("CSI %s;%sr: Set scrolling region: top=%s, bottom=%s", parts[0], parts[1], parts[0], parts[1]))
 		}
 	}
 
@@ -215,9 +215,9 @@ func parse(seq string) []string {
 		if len(parts) == 2 {
 			attributes, uri := parts[0], parts[1]
 			if uri == "" {
-				r = append(r, fmt.Sprintf("Reset hyperlink (attributes: %s)", attributes))
+				r = append(r, fmt.Sprintf("OSC 8;%s; BEL: Reset hyperlink (attributes: %s)", attributes, attributes))
 			} else {
-				r = append(r, fmt.Sprintf("Set hyperlink: URI=%s, attributes=%s", uri, attributes))
+				r = append(r, fmt.Sprintf("OSC 8;%s;%s BEL: Set hyperlink: URI=%s, attributes=%s", attributes, uri, uri, attributes))
 			}
 		}
 	}
@@ -225,180 +225,180 @@ func parse(seq string) []string {
 	// set foreground color
 	if ok, color := extract(seq, `\x1b\]10;(.*)\x07`); ok {
 		if color == "?" {
-			r = append(r, "Request foreground color")
+			r = append(r, "OSC 10;? BEL: Request foreground color")
 		} else {
-			r = append(r, fmt.Sprintf("Set foreground color: %s", color))
+			r = append(r, fmt.Sprintf("OSC 10;%s BEL: Set foreground color: %s", color, color))
 		}
 	}
 
 	// reset foreground color
 	if is(seq, `\x1b\]110\x07`) {
-		r = append(r, "Reset foreground color")
+		r = append(r, "OSC 110 BEL: Reset foreground color")
 	}
 
 	// set background color
 	if ok, color := extract(seq, `\x1b\]11;(.*)\x07`); ok {
 		if color == "?" {
-			r = append(r, "Request background color")
+			r = append(r, "OSC 11;? BEL: Request background color")
 		} else {
-			r = append(r, fmt.Sprintf("Set background color: %s", color))
+			r = append(r, fmt.Sprintf("OSC 11;%s BEL: Set background color: %s", color, color))
 		}
 	}
 
 	// reset background color
 	if is(seq, `\x1b\]111\x07`) {
-		r = append(r, "Reset background color")
+		r = append(r, "OSC 111 BEL: Reset background color")
 	}
 
 	// set cursor color
 	if ok, color := extract(seq, `\x1b\]12;(.*)\x07`); ok {
 		if color == "?" {
-			r = append(r, "Request cursor color")
+			r = append(r, "OSC 12;? BEL: Request cursor color")
 		} else {
-			r = append(r, fmt.Sprintf("Set cursor color: %s", color))
+			r = append(r, fmt.Sprintf("OSC 12;%s BEL: Set cursor color: %s", color, color))
 		}
 	}
 
 	// reset cursor color
 	if is(seq, `\x1b\]112\x07`) {
-		r = append(r, "Reset cursor color")
+		r = append(r, "OSC 112 BEL: Reset cursor color")
 	}
 
 	// set icon name and window title
 	if ok, title := extract(seq, `\x1b\]0;(.*)\x07`); ok {
-		r = append(r, fmt.Sprintf("Set icon name and window title: %s", title))
+		r = append(r, fmt.Sprintf("OSC 0;%s BEL: Set icon name and window title: %s", title, title))
 	}
 
 	// set icon name
 	if ok, name := extract(seq, `\x1b\]1;(.*)\x07`); ok {
-		r = append(r, fmt.Sprintf("Set icon name: %s", name))
+		r = append(r, fmt.Sprintf("OSC 1;%s BEL: Set icon name: %s", name, name))
 	}
 
 	// set window title
 	if ok, title := extract(seq, `\x1b\]2;(.*)\x07`); ok {
-		r = append(r, fmt.Sprintf("Set window title: %s", title))
+		r = append(r, fmt.Sprintf("OSC 2;%s BEL: Set window title: %s", title, title))
 	}
 
 	// Enable/Disable Cursor Keys
 	if is(seq, `\x1b\[?1h`) {
-		r = append(r, "Enable Cursor Keys")
+		r = append(r, "CSI ?1h: Enable Cursor Keys")
 	} else if is(seq, `\x1b\[?1l`) {
-		r = append(r, "Disable Cursor Keys")
+		r = append(r, "CSI ?1l: Disable Cursor Keys")
 	} else if is(seq, `\x1b\[?1\$p`) {
-		r = append(r, "Request Cursor Keys")
+		r = append(r, "CSI ?1$p: Request Cursor Keys")
 	}
 
 	// Show/Hide Cursor
 	if is(seq, `\x1b\[?25h`) {
-		r = append(r, "Show Cursor")
+		r = append(r, "CSI ?25h: Show Cursor")
 	} else if is(seq, `\x1b\[?25l`) {
-		r = append(r, "Hide Cursor")
+		r = append(r, "CSI ?25l: Hide Cursor")
 	} else if is(seq, `\x1b\[?25\$p`) {
-		r = append(r, "Request Cursor Visibility")
+		r = append(r, "CSI ?25$p: Request Cursor Visibility")
 	}
 
 	// Enable/Disable Mouse
 	if is(seq, `\x1b\[?1000h`) {
-		r = append(r, "Enable Mouse")
+		r = append(r, "CSI ?1000h: Enable Mouse")
 	} else if is(seq, `\x1b\[?1000l`) {
-		r = append(r, "Disable Mouse")
+		r = append(r, "CSI ?1000l: Disable Mouse")
 	} else if is(seq, `\x1b\[?1000\$p`) {
-		r = append(r, "Request Mouse")
+		r = append(r, "CSI ?1000$p: Request Mouse")
 	}
 
 	// Enable/Disable Mouse Hilite
 	if is(seq, `\x1b\[?1001h`) {
-		r = append(r, "Enable Mouse Hilite")
+		r = append(r, "CSI ?1001h: Enable Mouse Hilite")
 	} else if is(seq, `\x1b\[?1001l`) {
-		r = append(r, "Disable Mouse Hilite")
+		r = append(r, "CSI ?1001l: Disable Mouse Hilite")
 	} else if is(seq, `\x1b\[?1001\$p`) {
-		r = append(r, "Request Mouse Hilite")
+		r = append(r, "CSI ?1001$p: Request Mouse Hilite")
 	}
 
 	// Enable/Disable Mouse Cell Motion
 	if is(seq, `\x1b\[?1002h`) {
-		r = append(r, "Enable Mouse Cell Motion")
+		r = append(r, "CSI ?1002h: Enable Mouse Cell Motion")
 	} else if is(seq, `\x1b\[?1002l`) {
-		r = append(r, "Disable Mouse Cell Motion")
+		r = append(r, "CSI ?1002l: Disable Mouse Cell Motion")
 	} else if is(seq, `\x1b\[?1002\$p`) {
-		r = append(r, "Request Mouse Cell Motion")
+		r = append(r, "CSI ?1002$p: Request Mouse Cell Motion")
 	}
 
 	// Enable/Disable Mouse All Motion
 	if is(seq, `\x1b\[?1003h`) {
-		r = append(r, "Enable Mouse All Motion")
+		r = append(r, "CSI ?1003h: Enable Mouse All Motion")
 	} else if is(seq, `\x1b\[?1003l`) {
-		r = append(r, "Disable Mouse All Motion")
+		r = append(r, "CSI ?1003l: Disable Mouse All Motion")
 	} else if is(seq, `\x1b\[?1003\$p`) {
-		r = append(r, "Request Mouse All Motion")
+		r = append(r, "CSI ?1003$p: Request Mouse All Motion")
 	}
 
 	// Enable/Disable Report Focus
 	if is(seq, `\x1b\[?1004h`) {
-		r = append(r, "Enable Report Focus")
+		r = append(r, "CSI ?1004h: Enable Report Focus")
 	} else if is(seq, `\x1b\[?1004l`) {
-		r = append(r, "Disable Report Focus")
+		r = append(r, "CSI ?1004l: Disable Report Focus")
 	} else if is(seq, `\x1b\[?1004\$p`) {
-		r = append(r, "Request Report Focus")
+		r = append(r, "CSI ?1004$p: Request Report Focus")
 	}
 
 	// Enable/Disable Mouse SGR Ext
 	if is(seq, `\x1b\[?1006h`) {
-		r = append(r, "Enable Mouse SGR Ext")
+		r = append(r, "CSI ?1006h: Enable Mouse SGR Ext")
 	} else if is(seq, `\x1b\[?1006l`) {
-		r = append(r, "Disable Mouse SGR Ext")
+		r = append(r, "CSI ?1006l: Disable Mouse SGR Ext")
 	} else if is(seq, `\x1b\[?1006\$p`) {
-		r = append(r, "Request Mouse SGR Ext")
+		r = append(r, "CSI ?1006$p: Request Mouse SGR Ext")
 	}
 
 	// Enable/Disable Alt Screen Buffer
 	if is(seq, `\x1b\[?1049h`) {
-		r = append(r, "Enable Alt Screen Buffer")
+		r = append(r, "CSI ?1049h: Enable Alt Screen Buffer")
 	} else if is(seq, `\x1b\[?1049l`) {
-		r = append(r, "Disable Alt Screen Buffer")
+		r = append(r, "CSI ?1049l: Disable Alt Screen Buffer")
 	} else if is(seq, `\x1b\[?1049\$p`) {
-		r = append(r, "Request Alt Screen Buffer")
+		r = append(r, "CSI ?1049$p: Request Alt Screen Buffer")
 	}
 
 	// Enable/Disable Bracketed Paste
 	if is(seq, `\x1b\[?2004h`) {
-		r = append(r, "Enable Bracketed Paste")
+		r = append(r, "CSI ?2004h: Enable Bracketed Paste")
 	} else if is(seq, `\x1b\[?2004l`) {
-		r = append(r, "Disable Bracketed Paste")
+		r = append(r, "CSI ?2004l: Disable Bracketed Paste")
 	} else if is(seq, `\x1b\[?2004\$p`) {
-		r = append(r, "Request Bracketed Paste")
+		r = append(r, "CSI ?2004$p: Request Bracketed Paste")
 	}
 
 	// Enable/Disable Syncd Output
 	if is(seq, `\x1b\[?2026h`) {
-		r = append(r, "Enable Syncd Output")
+		r = append(r, "CSI ?2026h: Enable Syncd Output")
 	} else if is(seq, `\x1b\[?2026l`) {
-		r = append(r, "Disable Syncd Output")
+		r = append(r, "CSI ?2026l: Disable Syncd Output")
 	} else if is(seq, `\x1b\[?2026\$p`) {
-		r = append(r, "Request Syncd Output")
+		r = append(r, "CSI ?2026$p: Request Syncd Output")
 	}
 
 	// Enable/Disable Grapheme Clustering
 	if is(seq, `\x1b\[?2027h`) {
-		r = append(r, "Enable Grapheme Clustering")
+		r = append(r, "CSI ?2027h: Enable Grapheme Clustering")
 	} else if is(seq, `\x1b\[?2027l`) {
-		r = append(r, "Disable Grapheme Clustering")
+		r = append(r, "CSI ?2027l: Disable Grapheme Clustering")
 	} else if is(seq, `\x1b\[?2027\$p`) {
-		r = append(r, "Request Grapheme Clustering")
+		r = append(r, "CSI ?2027$p: Request Grapheme Clustering")
 	}
 
 	// Enable/Disable Win32 Input
 	if is(seq, `\x1b\[?9001h`) {
-		r = append(r, "Enable Win32 Input")
+		r = append(r, "CSI ?9001h: Enable Win32 Input")
 	} else if is(seq, `\x1b\[?9001l`) {
-		r = append(r, "Disable Win32 Input")
+		r = append(r, "CSI ?9001l: Disable Win32 Input")
 	} else if is(seq, `\x1b\[?9001\$p`) {
-		r = append(r, "Request Win32 Input")
+		r = append(r, "CSI ?9001$p: Request Win32 Input")
 	}
 
 	// Reset Style
 	if is(seq, `\x1b\[m`) {
-		r = append(r, "Reset Style")
+		r = append(r, "CSI m: Reset Style")
 	}
 
 	return r
