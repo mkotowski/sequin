@@ -1,4 +1,4 @@
-module github.com/caarlos0/ansigennie
+module github.com/caarlos0/sequin
 
 go 1.22.8
 
