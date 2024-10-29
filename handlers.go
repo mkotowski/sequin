@@ -63,6 +63,10 @@ var oscHandlers = map[int]func(*ansi.Parser){
 	112: handleResetTerminalColor,
 }
 
+var dcsHandlers = map[int]func(*ansi.Parser){
+	'q' | '+'<<intermedShift: handleTermcap,
+}
+
 func printf(format string, v ...any) func(*ansi.Parser) {
 	return func(*ansi.Parser) {
 		fmt.Printf(format, v...)

@@ -56,8 +56,14 @@ func main() {
 			fmt.Println()
 
 		case ansi.HasDcsPrefix(seq):
-			// TODO: add common DCS handlers
 			flushPrint()
+			fmt.Printf("DCS %q: ", seq)
+			handler, ok := dcsHandlers[p.Cmd]
+			if ok {
+				handler(p)
+			}
+
+			fmt.Println()
 
 		case ansi.HasOscPrefix(seq):
 			flushPrint()
