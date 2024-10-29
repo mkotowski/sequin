@@ -6,34 +6,34 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleReqMode(cmd int, isPrivate bool) func(*ansi.Parser) {
+func handleReqMode(parser *ansi.Parser) {
 	// DECRQM - Request Mode
-	return func(parser *ansi.Parser) {
-		if parser.ParamsLen == 0 {
-			// Invalid, ignore
-			return
-		}
+	if parser.ParamsLen == 0 {
+		// Invalid, ignore
+		return
+	}
 
-		mode := modeDesc(ansi.Param(parser.Params[0]).Param())
-		switch cmd {
-		case 'p':
-			if isPrivate {
-				fmt.Printf("Request private mode %q", mode)
-			} else {
-				fmt.Printf("Request mode %q", mode)
-			}
-		case 'h':
-			if isPrivate {
-				fmt.Printf("Enable private mode %q", mode)
-			} else {
-				fmt.Printf("Enable mode %q", mode)
-			}
-		case 'l':
-			if isPrivate {
-				fmt.Printf("Disable private mode %q", mode)
-			} else {
-				fmt.Printf("Disable mode %q", mode)
-			}
+	mode := modeDesc(ansi.Param(parser.Params[0]).Param())
+	cmd := ansi.Cmd(parser.Cmd)
+	isPrivate := cmd.Marker() == '?'
+	switch cmd.Command() {
+	case 'p':
+		if isPrivate {
+			fmt.Printf("Request private mode %q", mode)
+		} else {
+			fmt.Printf("Request mode %q", mode)
+		}
+	case 'h':
+		if isPrivate {
+			fmt.Printf("Enable private mode %q", mode)
+		} else {
+			fmt.Printf("Enable mode %q", mode)
+		}
+	case 'l':
+		if isPrivate {
+			fmt.Printf("Disable private mode %q", mode)
+		} else {
+			fmt.Printf("Disable mode %q", mode)
 		}
 	}
 }

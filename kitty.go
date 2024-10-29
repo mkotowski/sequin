@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleKitty(marker int) func(*ansi.Parser) {
+func handleKitty(parser *ansi.Parser) {
 	flagDesc := func(flag int) string {
 		var r []string
 		if flag&1 != 0 {
@@ -39,28 +39,28 @@ func handleKitty(marker int) func(*ansi.Parser) {
 			return "Unknown mode"
 		}
 	}
-	return func(parser *ansi.Parser) {
-		var first int
-		if parser.ParamsLen > 0 {
-			first = ansi.Param(parser.Params[0]).Param()
-		}
 
-		switch marker {
-		case '?':
-			fmt.Printf("Request Kitty keyboard")
-		case '>':
-			if first == 0 {
-				fmt.Printf("Disable Kitty keyboard")
-			} else {
-				fmt.Printf("Push %q Kitty keyboard flag", flagDesc(first))
-			}
-		case '<':
-			fmt.Printf("Pop %d Kitty keyboard flags", first)
-		case '=':
-			if parser.ParamsLen > 1 {
-				second := ansi.Param(parser.Params[1]).Param()
-				fmt.Printf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second))
-			}
+	var first int
+	if parser.ParamsLen > 0 {
+		first = ansi.Param(parser.Params[0]).Param()
+	}
+
+	cmd := ansi.Cmd(parser.Cmd)
+	switch cmd.Marker() {
+	case '?':
+		fmt.Printf("Request Kitty keyboard")
+	case '>':
+		if first == 0 {
+			fmt.Printf("Disable Kitty keyboard")
+		} else {
+			fmt.Printf("Push %q Kitty keyboard flag", flagDesc(first))
+		}
+	case '<':
+		fmt.Printf("Pop %d Kitty keyboard flags", first)
+	case '=':
+		if parser.ParamsLen > 1 {
+			second := ansi.Param(parser.Params[1]).Param()
+			fmt.Printf("Set %q Kitty keyboard flags to %q", flagDesc(first), modeDesc(second))
 		}
 	}
 }
