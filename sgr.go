@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-func handleSgr(parser *ansi.Parser) {
+func handleSgr(parser *ansi.Parser) (string, error) {
 	var str string
 	if parser.ParamsLen == 0 {
 		str = "Reset style"
@@ -47,7 +47,7 @@ func handleSgr(parser *ansi.Parser) {
 					str += " (Dashed)"
 				}
 			}
-		case 5:
+		case 5, 6:
 			str += "Blink"
 		case 7:
 			str += "Inverse"
@@ -71,10 +71,12 @@ func handleSgr(parser *ansi.Parser) {
 			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param)-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
 			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param)-100])
+		default:
+			str += "TODO"
 		}
 	}
 
-	fmt.Print(str)
+	return str, nil
 }
 
 var basicColors = map[int]string{

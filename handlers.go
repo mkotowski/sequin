@@ -1,12 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/charmbracelet/x/ansi"
 )
 
-var csiHandlers = map[int]func(*ansi.Parser){
+var csiHandlers = map[int]handlerFn{
 	'm':                    handleSgr,
 	'c':                    printf("Request primary device attributes"),
 	'q' | '>'<<markerShift: handleXT,
@@ -28,6 +29,7 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'n' | '?'<<markerShift: handleCursor,
 	'n':                    handleCursor,
 	's':                    handleCursor,
+	'u':                    handleCursor,
 
 	// screen
 	'J': handleScreen,
@@ -47,7 +49,7 @@ var csiHandlers = map[int]func(*ansi.Parser){
 	'l':                                         handleMode,
 }
 
-var oscHandlers = map[int]func(*ansi.Parser){
+var oscHandlers = map[int]handlerFn{
 	0:   handleTitle,
 	1:   handleTitle,
 	2:   handleTitle,
@@ -63,12 +65,24 @@ var oscHandlers = map[int]func(*ansi.Parser){
 	112: handleResetTerminalColor,
 }
 
-var dcsHandlers = map[int]func(*ansi.Parser){
+var dcsHandlers = map[int]handlerFn{
 	'q' | '+'<<intermedShift: handleTermcap,
 }
 
-func printf(format string, v ...any) func(*ansi.Parser) {
-	return func(*ansi.Parser) {
-		fmt.Printf(format, v...)
+var escHandler = map[int]handlerFn{
+	'7': printf("Save cursor"),
+	'8': printf("Restore cursor"),
+}
+
+var (
+	errUnhandled = errors.New("TODO: unhandled sequence")
+	errInvalid   = errors.New("invalid sequence")
+)
+
+type handlerFn = func(*ansi.Parser) (string, error)
+
+func printf(format string, v ...any) handlerFn {
+	return func(*ansi.Parser) (string, error) {
+		return fmt.Sprintf(format, v...), nil
 	}
 }
