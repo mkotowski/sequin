@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -132,6 +133,11 @@ var others = map[string]string{
 	"invalid termcap":              strings.Replace(ansi.RequestTermcap("a"), hex.EncodeToString([]byte("a")), "", 1),
 	"invalid termcap hex":          strings.Replace(ansi.RequestTermcap("a"), hex.EncodeToString([]byte("a")), "a", 1),
 	"invalid xt":                   strings.Replace(ansi.RequestXTVersion, "0", "1", 1),
+	"text":                         "some text",
+	"bold text":                    new(ansi.Style).Bold().String() + "some text" + ansi.ResetStyle,
+	"esc":                          fmt.Sprintf("%c", ansi.ESC),
+	"file sep":                     fmt.Sprintf("%c", ansi.FS),
+	"apc":                          "\x1b_Hello World\x1b\\",
 }
 
 var sgr = map[string]string{

@@ -95,7 +95,7 @@ func exec(cmd *cobra.Command, _ []string) error {
 
 			switch {
 			case ansi.HasPrefix(p.Data, []byte("G")):
-				// Kitty graphics
+				// TODO: Kitty graphics
 			}
 
 			cmd.Println()
