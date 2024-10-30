@@ -63,6 +63,18 @@ Text: " "
 CSI "\x1b[0m": Reset style
 CSI "\x1b[;;1m": , , Bold
 Text: "sequin"
+
+% git -c status.color=always status -sb | sequin
+Text: "## "
+CSI "\x1b[32m": Foreground color: Green
+Text: "main"
+CSI "\x1b[m": Reset style
+Text: "..."
+CSI "\x1b[31m": Foreground color: Red
+Text: "origin/main"
+CSI "\x1b[m": Reset style
+Control code "\n": line feed
+
 ```
 
 So you may also use it to debug applications, and of course, to learn more!
