@@ -53,15 +53,15 @@ Text: "file.txt"
 
 $ glow -s dark README.md | sequin
 Control code "\n": line feed
-CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[;;1m": Bold
 CSI "\x1b[0m": Reset style
-CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[;;1m": Bold
 CSI "\x1b[0m": Reset style
 Text: "  "
-CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[;;1m": Bold
 Text: " "
 CSI "\x1b[0m": Reset style
-CSI "\x1b[;;1m": , , Bold
+CSI "\x1b[;;1m": Bold
 Text: "sequin"
 
 $ git -c status.color=always status -sb | sequin
