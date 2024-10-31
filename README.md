@@ -64,7 +64,7 @@ CSI "\x1b[0m": Reset style
 CSI "\x1b[;;1m": , , Bold
 Text: "sequin"
 
-% git -c status.color=always status -sb | sequin
+$ git -c status.color=always status -sb | sequin
 Text: "## "
 CSI "\x1b[32m": Foreground color: Green
 Text: "main"
