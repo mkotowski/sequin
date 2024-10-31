@@ -7,6 +7,8 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+const maxInt32 = int(int32(^uint32(0) >> 1))
+
 func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	var str string
 	if parser.ParamsLen == 0 {
@@ -15,7 +17,10 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	var comma bool
 	for i := 0; i < parser.ParamsLen; i++ {
 		param := ansi.Param(parser.Params[i])
-		if param.Param() == int(int32(^uint32(0)>>1)) {
+		// if the sequence has many `;` without any value, the parser will
+		// return get the max int32 as the param.
+		// we can safely ignore those.
+		if param.Param() == maxInt32 {
 			continue
 		}
 		if comma {
