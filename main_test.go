@@ -109,6 +109,7 @@ var mode = map[string]string{
 	"request win32 input":         ansi.RequestWin32Input,
 	"invalid":                     strings.Replace(ansi.ShowCursor, "25", "27", 1),
 	"non private":                 strings.Replace(ansi.ShowCursor, "?", "", 1),
+	"empty values":                strings.Replace(new(ansi.Style).Bold().String(), "[", "[;;;", 1),
 }
 
 var kitty = map[string]string{

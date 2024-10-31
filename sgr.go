@@ -12,11 +12,16 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	if parser.ParamsLen == 0 {
 		str = "Reset style"
 	}
+	var comma bool
 	for i := 0; i < parser.ParamsLen; i++ {
 		param := ansi.Param(parser.Params[i])
-		if i > 0 {
+		if param.Param() == int(int32(^uint32(0)>>1)) {
+			continue
+		}
+		if comma {
 			str += ", "
 		}
+		comma = true
 
 		// TODO: add more parameters and options
 		switch param.Param() {
