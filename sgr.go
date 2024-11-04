@@ -7,8 +7,6 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
-const maxInt32 = int(int32(^uint32(0) >> 1))
-
 func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 	if parser.ParamsLen == 0 {
 		return "Reset style", nil
@@ -79,13 +77,13 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		case 29:
 			str += "No crossed-out"
 		case 30, 31, 32, 33, 34, 35, 36, 37:
-			str += fmt.Sprintf("Foreground color: %s", basicColors[int(param.Param())-30])
+			str += fmt.Sprintf("Foreground color: %s", basicColors[param.Param()-30])
 		case 38:
 			str += fmt.Sprintf("Foreground color: %d", readColor(&i, parser.Params))
 		case 39:
 			str += "Default foreground color"
 		case 40, 41, 42, 43, 44, 45, 46, 47:
-			str += fmt.Sprintf("Background color: %s", basicColors[int(param.Param())-40])
+			str += fmt.Sprintf("Background color: %s", basicColors[param.Param()-40])
 		case 48:
 			str += fmt.Sprintf("Background color: %d", readColor(&i, parser.Params))
 		case 49:
@@ -93,9 +91,9 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		case 58, 59:
 			str += fmt.Sprintf("Underline color: %d", readColor(&i, parser.Params))
 		case 90, 91, 92, 93, 94, 95, 96, 97:
-			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param.Param())-90])
+			str += fmt.Sprintf("Bright foreground color: %s", basicColors[param.Param()-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
-			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param.Param())-100])
+			str += fmt.Sprintf("Bright background color: %s", basicColors[param.Param()-100])
 		}
 	}
 
