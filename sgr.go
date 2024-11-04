@@ -10,19 +10,14 @@ import (
 const maxInt32 = int(int32(^uint32(0) >> 1))
 
 func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
-	var str string
 	if parser.ParamsLen == 0 {
-		str = "Reset style"
+		return "Reset style", nil
 	}
+
+	var str string
 	var comma bool
 	for i := 0; i < parser.ParamsLen; i++ {
 		param := ansi.Param(parser.Params[i])
-		// if the sequence has many `;` without any value, the parser will
-		// return get the max int32 as the param.
-		// we can safely ignore those.
-		if param.Param() == maxInt32 {
-			continue
-		}
 		if comma {
 			str += ", "
 		}
@@ -30,6 +25,10 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 
 		// TODO: add more parameters and options
 		switch param.Param() {
+		case -1:
+			// SGR default value is zero. -1 means missing parameter which is
+			// equivalent to the default value.
+			fallthrough
 		case 0:
 			str = "Reset style"
 		case 1:
@@ -80,13 +79,13 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		case 29:
 			str += "No crossed-out"
 		case 30, 31, 32, 33, 34, 35, 36, 37:
-			str += fmt.Sprintf("Foreground color: %s", basicColors[int(param)-30])
+			str += fmt.Sprintf("Foreground color: %s", basicColors[int(param.Param())-30])
 		case 38:
 			str += fmt.Sprintf("Foreground color: %d", readColor(&i, parser.Params))
 		case 39:
 			str += "Default foreground color"
 		case 40, 41, 42, 43, 44, 45, 46, 47:
-			str += fmt.Sprintf("Background color: %s", basicColors[int(param)-40])
+			str += fmt.Sprintf("Background color: %s", basicColors[int(param.Param())-40])
 		case 48:
 			str += fmt.Sprintf("Background color: %d", readColor(&i, parser.Params))
 		case 49:
@@ -94,9 +93,9 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 		case 58, 59:
 			str += fmt.Sprintf("Underline color: %d", readColor(&i, parser.Params))
 		case 90, 91, 92, 93, 94, 95, 96, 97:
-			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param)-90])
+			str += fmt.Sprintf("Bright foreground color: %s", basicColors[int(param.Param())-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
-			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param)-100])
+			str += fmt.Sprintf("Bright background color: %s", basicColors[int(param.Param())-100])
 		}
 	}
 
