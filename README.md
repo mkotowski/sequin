@@ -17,9 +17,10 @@ don't know it.
 
 You can `printf '<sequences>' | sequin` and get an explanation!
 
-More complex use cases might include checking [teatest's][] golden files, e.g.:
+More complex use cases might include checking [teatest][]'s golden files.
 
 <details>
+  <summary>Golden Files example</summary>
 
 ```console
 $ cat ./testdata/TestApp.golden | sequin
@@ -46,9 +47,11 @@ CSI "\x1b[?1006l": Disable private mode "mouse SGR ext"
 
 </details>
 
-You can also use it to check the output of any program[^pipe], for instance, `ls` and `glow`:
+You can also use it to check the output of any program[^pipe], for instance, `ls` and `glow`.
 
 <details>
+
+  <summary>Reading the output of other programs</summary>
 
 ```console
 $ ls -1 --color=always | sequin
