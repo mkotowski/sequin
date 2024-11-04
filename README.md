@@ -1,6 +1,6 @@
 # sequin
 
-Parse ANSI sequences into human-readable format.
+Human-readable ANSI sequences.
 
 ```console
 $ printf '\033[48;2;255;0;0m\033[m' | sequin
@@ -8,14 +8,18 @@ CSI "\x1b[48;2;255;0;0m": Background color: {255 0 0 255}
 CSI "\x1b[m": Reset style
 ```
 
-## Use cases
+---
+
+Sequin is a small utility that can help you debug your CLI or TUI applications.
 
 The most basic use case is to describe what an escape sequence does when you
 don't know it.
 
-You can `printf '\x1betc' | sequin` and get an explanation!
+You can `printf '<sequences>' | sequin` and get an explanation!
 
 More complex use cases might include checking [teatest's][] golden files, e.g.:
+
+<details>
 
 ```console
 $ cat ./testdata/TestApp.golden | sequin
@@ -40,7 +44,11 @@ CSI "\x1b[?1003l": Disable private mode "mouse all motion"
 CSI "\x1b[?1006l": Disable private mode "mouse SGR ext"
 ```
 
+</details>
+
 You can also use it to check the output of any program[^pipe], for instance, `ls` and `glow`:
+
+<details>
 
 ```console
 $ ls -1 --color=always | sequin
@@ -74,8 +82,9 @@ CSI "\x1b[31m": Foreground color: Red
 Text: "origin/main"
 CSI "\x1b[m": Reset style
 Control code "\n": line feed
-
 ```
+
+</details>
 
 So you may also use it to debug applications, and of course, to learn more!
 
@@ -91,8 +100,15 @@ Check [ansi][] out to learn more!
 
 ## Current state
 
-Common sequences are implemented, but there is still plenty of work to do!
-If you notice one of such missing sequences, feel free to open a PR. 😄
+Common sequences are implemented, but there is still plenty of work to do - for
+instance, APC sequences are not supported yet.
+If you notice one of such missing sequences, or want to work on any other area
+of the project, feel free to open a PR. 😄
+
+## Contributing
+
+Contribution guidelines are specified
+[here](https://github.com/charmbracelet/.github/blob/main/CONTRIBUTING.md).
 
 ## Feedback
 
