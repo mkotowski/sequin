@@ -36,7 +36,7 @@ func cmd() *cobra.Command {
 printf '\x1b[m' | sequin
 sequin <file
 	`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			w := colorprofile.NewWriter(cmd.OutOrStdout(), os.Environ())
 			in, err := io.ReadAll(cmd.InOrStdin())
 			if err != nil {
@@ -68,29 +68,29 @@ var (
 func exec(w *colorprofile.Writer, in []byte) error {
 	seqPrint := func(kind string, seq []byte) {
 		s := seqStyle.Render(fmt.Sprintf("%q", seq))
-		fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
+		_, _ = fmt.Fprintf(w, "%s %s: ", kindStyle.Render(kind), s)
 	}
 
 	flushPrint := func() {
 		if buf.Len() == 0 {
 			return
 		}
-		fmt.Fprintf(w, "%s %s\n", kindStyle.Render("TXT"), txtStyle.Render(buf.String()))
+		_, _ = fmt.Fprintf(w, "%s %s\n", kindStyle.Render("TXT"), txtStyle.Render(buf.String()))
 		buf.Reset()
 	}
 
 	handle := func(reg map[int]handlerFn, p *ansi.Parser) {
 		handler, ok := reg[p.Cmd]
 		if !ok {
-			fmt.Fprintln(w, errStyle.Render(errUnhandled.Error()))
+			_, _ = fmt.Fprintln(w, errStyle.Render(errUnhandled.Error()))
 			return
 		}
 		out, err := handler(p)
 		if err != nil {
-			fmt.Fprintln(w, errStyle.Render(err.Error()))
+			_, _ = fmt.Fprintln(w, errStyle.Render(err.Error()))
 			return
 		}
-		fmt.Fprintln(w, out)
+		_, _ = fmt.Fprintln(w, out)
 	}
 
 	var state byte
@@ -125,7 +125,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 				// TODO: Kitty graphics
 			}
 
-			fmt.Fprintln(w)
+			_, _ = fmt.Fprintln(w)
 
 		case ansi.HasEscPrefix(seq):
 			flushPrint()
@@ -133,7 +133,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			if len(seq) == 1 {
 				// just an ESC
 				seqPrint("ESC", seq)
-				fmt.Fprintln(w, "Control code ESC")
+				_, _ = fmt.Fprintln(w, "Control code ESC")
 				break
 			}
 
@@ -144,7 +144,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			flushPrint()
 			// control code
 			seqPrint("CTR", seq)
-			fmt.Fprintln(w, ctrlCodes[seq[0]])
+			_, _ = fmt.Fprintln(w, ctrlCodes[seq[0]])
 
 		case width > 0:
 			// Text
@@ -152,7 +152,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 		default:
 			flushPrint()
-			fmt.Fprintf(w, "Unknown %q\n", seq)
+			_, _ = fmt.Fprintf(w, "Unknown %q\n", seq)
 		}
 
 		in = in[n:]
