@@ -50,24 +50,6 @@ sequin <file
 	}
 }
 
-var (
-	kindStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#C070D4")).
-			Padding(0, 1).
-			MaxWidth(5).
-			Width(5).
-			AlignHorizontal(lipgloss.Center).
-			Bold(true)
-	seqStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#04D7D7")).
-			Italic(true)
-	txtStyle = lipgloss.NewStyle().
-			Faint(true).
-			Italic(true)
-	errStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("204"))
-)
-
 //nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG, _ := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
@@ -79,25 +61,25 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		Bold(true).
 		MarginRight(1)
 	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0x917F8B, 0x978692)) //nolint:mnd
+		Foreground(lightDark(0x917F8B, 0x978692))
 	separator := lipgloss.NewStyle().
 		Foreground(lightDark("", 0x978692)).
 		SetString(": ")
 	textStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0xD9D9D9, 0xD9D9D9)) //nolint:mnd
+		Foreground(lightDark(0xD9D9D9, 0xD9D9D9))
 	errStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0xEC6A88, 0xff5f87)) //nolint:mnd
+		Foreground(lightDark(0xEC6A88, 0xff5f87))
 	explanationStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0x3C343A, 0xD4CAD1)) //nolint:mnd
+		Foreground(lightDark(0x3C343A, 0xD4CAD1))
 
 	kindColors := map[string]color.Color{
-		"CSI":  lightDark(0x936EE5, 0x8D58FF), //nolint:mnd
-		"DCS":  lightDark(0x86C867, 0xCEE88A), //nolint:mnd
-		"OSC":  lightDark(0x43C7E0, 0x1CD4F7), //nolint:mnd
-		"APC":  lightDark(0xF58855, 0xFF8383), //nolint:mnd
-		"ESC":  lightDark(0xE46FDD, 0xE46FDD), //nolint:mnd
-		"Ctrl": lightDark(0x4DBA94, 0x4BD2A3), //nolint:mnd
-		"Text": lightDark(0x978692, 0x6C6068), //nolint:mnd
+		"CSI":  lightDark(0x936EE5, 0x8D58FF),
+		"DCS":  lightDark(0x86C867, 0xCEE88A),
+		"OSC":  lightDark(0x43C7E0, 0x1CD4F7),
+		"APC":  lightDark(0xF58855, 0xFF8383),
+		"ESC":  lightDark(0xE46FDD, 0xE46FDD),
+		"Ctrl": lightDark(0x4DBA94, 0x4BD2A3),
+		"Text": lightDark(0x978692, 0x6C6068),
 	}
 
 	kindStyle := func(kind string) lipgloss.Style {
