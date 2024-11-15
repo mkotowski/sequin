@@ -53,7 +53,7 @@ sequin <file
 
 //nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
-	hasDarkBG, _ := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
+	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
 	lightDark := lipgloss.LightDark(hasDarkBG)
 
 	rawKindStyle := lipgloss.NewStyle().
