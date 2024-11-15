@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/color"
 	"io"
-	"log"
 	"os"
 	"strings"
 
@@ -91,7 +90,6 @@ func exec(w *colorprofile.Writer, in []byte) error {
 
 	seqPrint := func(kind string, seq []byte) {
 		s := fmt.Sprintf("%q", seq)
-		log.Printf("seq: %s", s)
 		s = strings.TrimPrefix(s, `"`)
 		s = strings.TrimSuffix(s, `"`)
 
