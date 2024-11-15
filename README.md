@@ -1,4 +1,9 @@
-# sequin
+# Sequin
+
+<p>
+    <a href="https://github.com/charmbracelet/sequin/releases"><img src="https://img.shields.io/github/release/charmbracelet/sequin.svg" alt="Latest Release"></a>
+    <a href="https://github.com/charmbracelet/sequin/actions"><img src="https://github.com/charmbracelet/sequin/workflows/build/badge.svg" alt="Build Status"></a>
+</p>
 
 Human-readable ANSI sequences.
 
@@ -103,7 +108,7 @@ Check [ansi][] out to learn more!
 
 ## Current state
 
-Common sequences are implemented, but there is still plenty of work to do - for
+Common sequences are implemented, but there is still plenty of work to do. For
 instance, APC sequences are not supported yet.
 If you notice one of such missing sequences, or want to work on any other area
 of the project, feel free to open a PR. 😄
