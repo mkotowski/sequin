@@ -1,1 +1,1 @@
- CSI  "\x1b[1K": Erase line left
+ CSI 1K: Erase line left

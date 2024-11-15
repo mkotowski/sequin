@@ -1,1 +1,1 @@
- CSI  "\x1b[>1q": invalid sequence
+ CSI >1q: invalid sequence

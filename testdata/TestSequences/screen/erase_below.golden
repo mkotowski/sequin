@@ -1,1 +1,1 @@
- CSI  "\x1b[J": Erase screen bellow
+ CSI J: Erase screen bellow

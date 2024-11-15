@@ -1,1 +1,1 @@
- CSI  "\x1b[s": Save cursor position
+ CSI s: Save cursor position
