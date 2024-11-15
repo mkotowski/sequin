@@ -101,6 +101,10 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		s := fmt.Sprintf("%q", seq)
 		s = strings.TrimPrefix(s, `"`)
 		s = strings.TrimSuffix(s, `"`)
+		if raw {
+			_, _ = fmt.Fprint(w, kindStyle(kind).Render(s))
+			return
+		}
 
 		// Trim introducers and terminators
 		// CSI
