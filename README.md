@@ -1,6 +1,7 @@
 # Sequin
 
 <p>
+    <img width="356" alt="Charm Sequin Logo" src="https://github.com/user-attachments/assets/5d41c071-c27f-412e-8a00-4e1258c70ceb"><br>
     <a href="https://github.com/charmbracelet/sequin/releases"><img src="https://img.shields.io/github/release/charmbracelet/sequin.svg" alt="Latest Release"></a>
     <a href="https://github.com/charmbracelet/sequin/actions"><img src="https://github.com/charmbracelet/sequin/workflows/build/badge.svg" alt="Build Status"></a>
 </p>
