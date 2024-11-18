@@ -70,12 +70,11 @@ $ cat ./testdata/MyCuteApp.golden | sequin
 
 To generate golden files for your TUIs have a look at [`golden`][golden] and [`teatest`][teatest] from the [`/x`][x] project.
 
-## Bonus: Syntax Highlighting for Raw Sequences
+## Pro Mode: Syntax Highlighting for Raw Sequences
 
-One of the paint points that we find when working with ANSI escape sequences is
-that they are just a bunch of "special" characters and text. Sometimes instead
-of explaining the sequences line by line, you just want to highlight them to
-visually see what's going on.
+One of the paint points that we find when reading raw ANSI output is
+that it’s hard to visually separate sequences from reguar text. For situations
+like this you can use the `--raw`/`-r` flag to simply highlight sequences inline:
 
 ```bash
 git -c status.color=always status -sb | sequin -r && echo
