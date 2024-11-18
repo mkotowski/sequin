@@ -28,7 +28,7 @@ Use a package manager:
 brew install charmbracelet/tap/sequin
 
 # Arch Linux (btw)
-yay -S sequin
+yay -S sequin-bin
 
 # Nix
 nix-shell -p nur.repos.charmbracelet.sequin
