@@ -22,6 +22,8 @@ jobs:
       docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
       gh_pat: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       goreleaser_key: ${{ secrets.GORELEASER_KEY }}
+      nfpm_gpg_key: ${{ secrets.NFPM_GPG_KEY }}
+      nfpm_passphrase: ${{ secrets.NFPM_PASSPHRASE }}
       twitter_consumer_key: ${{ secrets.TWITTER_CONSUMER_KEY }}
       twitter_consumer_secret: ${{ secrets.TWITTER_CONSUMER_SECRET }}
       twitter_access_token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
