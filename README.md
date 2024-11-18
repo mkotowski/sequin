@@ -27,14 +27,11 @@ Use a package manager:
 # macOS or Linux
 brew install charmbracelet/tap/sequin
 
-# Windows (with Winget)
-winget install charmbracelet.sequin
-
 # Arch Linux (btw)
 yay -S sequin
 
 # Nix
-nix-shell -p mods
+nix-shell -p nur.repos.charmbracelet.sequin
 ```
 
 <details>
