@@ -19,6 +19,85 @@ ones used by [`teatest`][teatest] to crystalize [Bubble Tea][bubbletea] output.
 
 Are you using Sequin in an interesting way? We’d love to hear about it.
 
+## Installation
+
+Use a package manager:
+
+```bash
+# macOS or Linux
+brew install charmbracelet/tap/sequin
+
+# Windows (with Winget)
+winget install charmbracelet.sequin
+
+# Arch Linux (btw)
+yay -S sequin
+
+# Nix
+nix-shell -p mods
+```
+
+<details>
+<summary>Debian/Ubuntu</summary>
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+sudo apt update && sudo apt install sequin
+```
+
+</details>
+
+<details>
+<summary>Fedora/RHEL</summary>
+
+```bash
+echo '[charm]
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+sudo yum install sequin
+```
+
+</details>
+
+Or, download it:
+
+- [Packages][releases] are available in Debian and RPM formats
+- [Binaries][releases] are available for Linux, macOS, Windows, FreeBSD, OpenBSD, and NetBSD
+
+[releases]: https://github.com/charmbracelet/mods/releases
+
+Or, just install it with `go`:
+
+```sh
+go install github.com/charmbracelet/sequin@latest
+```
+
+<details>
+<summary>Shell Completions</summary>
+
+All the packages and archives come with pre-generated completion files for Bash,
+ZSH, Fish, and PowerShell.
+
+If you built it from source, you can generate them with:
+
+```bash
+sequin completion bash -h
+sequin completion zsh -h
+sequin completion fish -h
+sequin completion powershell -h
+```
+
+If you use a package (like Homebrew, Debs, etc), the completions should be set
+up automatically, given your shell is configured properly.
+
+</details>
+
+
 ## Examples
 
 ### Describing escape sequences
@@ -82,9 +161,9 @@ git -c status.color=always status -sb | sequin -r && echo
 
 <p><img src="https://github.com/user-attachments/assets/c3b19a81-934e-4b87-b86d-2aa2a25b8c5d" width="450"></p>
 
-## How it works
+## How it all works
 
-It relies heavily on our glorious [`ansi`][ansi] package, currently in the
+Sequin relies heavily on our glorious [`ansi`][ansi] package, currently in the
 elusive [`/x`][x] project. Whilst traversing the strings, Sequin pretty prints
 what the sequences are and what they’re doing.
 
@@ -97,9 +176,9 @@ what the sequences are and what they’re doing.
 ## Is it done?
 
 No! Common sequences are implemented, but there is still plenty of work to
-do. For instance, [APC](https://www.apc.fr) sequences are not supported yet. If
-you notice one of such missing sequences, or want to work on any other area of
-the project, feel free to open a PR. 💘
+do. For instance, APC sequences are not supported yet. If you notice one 
+of such missing sequences, or want to work on any other area of the project, 
+feel free to open a PR. 💘
 
 ## Contributing
 
