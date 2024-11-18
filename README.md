@@ -73,7 +73,7 @@ To generate golden files for your TUIs have a look at [`golden`][golden] and [`t
 
 It relies heavily on our glorious [`ansi`][ansi] package, currently in the
 elusive [`/x`][x] project. Whilst traversing the strings, Sequin pretty prints
-what the sequences are and what they’re are doing.
+what the sequences are and what they’re doing.
 
 [ansi]: https://pkg.go.dev/github.com/charmbracelet/x/ansi
 [bubbletea]: https://github.com/charmbracelet/bubbletea
