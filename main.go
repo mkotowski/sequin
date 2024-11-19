@@ -58,7 +58,9 @@ sequin <file
 //nolint:mnd
 func exec(w *colorprofile.Writer, in []byte) error {
 	hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
-	lightDark := lipgloss.LightDark(hasDarkBG)
+	lightDark := func(light, dark string) color.Color {
+		return lipgloss.LightDark(hasDarkBG)(lipgloss.Color(light), lipgloss.Color(dark))
+	}
 
 	rawModeStyle := lipgloss.NewStyle()
 	rawKindStyle := lipgloss.NewStyle().
@@ -67,25 +69,25 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		Bold(true).
 		MarginRight(1)
 	seqStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0x917F8B, 0x978692))
+		Foreground(lightDark("#917F8B", "#978692"))
 	separator := lipgloss.NewStyle().
-		Foreground(lightDark("", 0x978692)).
+		Foreground(lightDark("", "#978692")).
 		SetString(": ")
 	textStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0xD9D9D9, 0xD9D9D9))
+		Foreground(lightDark("#D9D9D9", "#D9D9D9"))
 	errStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0xEC6A88, 0xff5f87))
+		Foreground(lightDark("#EC6A88", "#ff5f87"))
 	explanationStyle := lipgloss.NewStyle().
-		Foreground(lightDark(0x3C343A, 0xD4CAD1))
+		Foreground(lightDark("#3C343A", "#D4CAD1"))
 
 	kindColors := map[string]color.Color{
-		"CSI":  lightDark(0x936EE5, 0x8D58FF),
-		"DCS":  lightDark(0x86C867, 0xCEE88A),
-		"OSC":  lightDark(0x43C7E0, 0x1CD4F7),
-		"APC":  lightDark(0xF58855, 0xFF8383),
-		"ESC":  lightDark(0xE46FDD, 0xE46FDD),
-		"Ctrl": lightDark(0x4DBA94, 0x4BD2A3),
-		"Text": lightDark(0x978692, 0x6C6068),
+		"CSI":  lightDark("#936EE5", "#8D58FF"),
+		"DCS":  lightDark("#86C867", "#CEE88A"),
+		"OSC":  lightDark("#43C7E0", "#1CD4F7"),
+		"APC":  lightDark("#F58855", "#FF8383"),
+		"ESC":  lightDark("#E46FDD", "#E46FDD"),
+		"Ctrl": lightDark("#4DBA94", "#4BD2A3"),
+		"Text": lightDark("#978692", "#6C6068"),
 	}
 
 	kindStyle := func(kind string) lipgloss.Style {
