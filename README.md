@@ -148,7 +148,7 @@ To generate golden files for your TUIs have a look at [`golden`][golden] and [`t
 
 ## Pro Mode: Syntax Highlighting for Raw Sequences
 
-One of the paint points that we find when reading raw ANSI output is
+One of the pain points that we find when reading raw ANSI output is
 that it’s hard to visually separate sequences from reguar text. For situations
 like this you can use the `--raw`/`-r` flag to simply highlight sequences inline:
 
