@@ -71,7 +71,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 	seqStyle := lipgloss.NewStyle().
 		Foreground(lightDark("#917F8B", "#978692"))
 	separator := lipgloss.NewStyle().
-		Foreground(lightDark("", "#978692")).
+		Foreground(lipgloss.Color("#978692")).
 		SetString(": ")
 	textStyle := lipgloss.NewStyle().
 		Foreground(lightDark("#D9D9D9", "#D9D9D9"))
@@ -85,7 +85,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 		"DCS":  lightDark("#86C867", "#CEE88A"),
 		"OSC":  lightDark("#43C7E0", "#1CD4F7"),
 		"APC":  lightDark("#F58855", "#FF8383"),
-		"ESC":  lightDark("#E46FDD", "#E46FDD"),
+		"ESC":  lipgloss.Color("#E46FDD"),
 		"Ctrl": lightDark("#4DBA94", "#4BD2A3"),
 		"Text": lightDark("#978692", "#6C6068"),
 	}
