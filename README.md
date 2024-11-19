@@ -8,7 +8,7 @@
 
 Human-readable ANSI sequences.
 
-<p><img src="https://github.com/user-attachments/assets/e48d3dce-b619-4a10-848f-2b66532a31e7" width="800" alt="Sequin doing its thing"></p>
+<p><img width="766" src="https://github.com/user-attachments/assets/60cce45d-be8a-4d77-a063-a3cf3d952966"></p>
 
 Sequin is a small utility that can help you debug your CLIs and TUIs. It's also
 great for describing escape sequences you might not understand, and exploring
