@@ -40,17 +40,22 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			str += "Underline"
 			if param.HasMore() {
 				// Handle underline styles
-				switch next := ansi.Param(parser.Params[i+1]); next.Param() {
-				case 1:
-					str += " (Single)"
-				case 2:
-					str += " (Double)"
-				case 3:
-					str += " (Curly)"
-				case 4:
-					str += " (Dotted)"
-				case 5:
-					str += " (Dashed)"
+				next := ansi.Param(parser.Params[i+1])
+				switch p := next.Param(); p {
+				case 1, 2, 3, 4, 5:
+					i++
+					switch p {
+					case 1:
+						str += " (Single)"
+					case 2:
+						str += " (Double)"
+					case 3:
+						str += " (Curly)"
+					case 4:
+						str += " (Dotted)"
+					case 5:
+						str += " (Dashed)"
+					}
 				}
 			}
 		case 5, 6:
