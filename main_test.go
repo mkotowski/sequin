@@ -16,9 +16,9 @@ var cursor = map[string]string{
 	// cursor
 	"save":                         ansi.SaveCursor,
 	"restore":                      ansi.RestoreCursor,
-	"request pos":                  ansi.CursorPositionReport,
-	"request extended pos":         ansi.ExtendedCursorPosition,
-	"invalid request extended pos": strings.Replace(ansi.ExtendedCursorPosition, "6", "7", 1),
+	"request pos":                  ansi.RequestCursorPosition,
+	"request extended pos":         ansi.RequestExtendedCursorPosition,
+	"invalid request extended pos": strings.Replace(ansi.RequestExtendedCursorPosition, "6", "7", 1),
 	"up 1":                         ansi.CursorUp1,
 	"up":                           ansi.CursorUp(5),
 	"down 1":                       ansi.CursorDown1,

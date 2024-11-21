@@ -164,7 +164,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			return
 		}
 
-		handler, ok := reg[p.Cmd]
+		handler, ok := reg[int(p.Cmd())]
 		if !ok {
 			_, _ = fmt.Fprintln(w, errStyle.Render(errUnhandled.Error()))
 			return
@@ -205,7 +205,7 @@ func exec(w *colorprofile.Writer, in []byte) error {
 			seqPrint("APC", seq)
 
 			switch {
-			case ansi.HasPrefix(p.Data, []byte("G")):
+			case ansi.HasPrefix(p.Data(), []byte("G")):
 				// TODO: Kitty graphics
 			}
 
