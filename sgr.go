@@ -114,6 +114,7 @@ var basicColors = map[int]string{
 	7: "White",
 }
 
+//nolint:mnd
 func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 	i := *idxp
 	paramsLen := len(params)
