@@ -38,9 +38,13 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			str += "Italic"
 		case 4:
 			str += "Underline"
-			if param.HasMore() {
-				// Handle underline styles
-				switch next := ansi.Param(parser.Params[i+1]); next.Param() {
+
+			// Handle underline styles
+			currentParam := param
+			nextParam := ansi.Param(parser.Params[i+1])
+
+			if currentParam.HasMore() {
+				switch nextParam.Param() {
 				case 0:
 					str += " disabled"
 				case 1:
@@ -56,7 +60,21 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 				default:
 					str += " (Unknown)"
 				}
+				currentParam = nextParam
 				i++
+			}
+
+			// Swallow further sub-params as invalid.
+			// This enables to properly detect parameters encoded after SGR 4.
+			hasMoreThanOneSubParameter := false
+			for currentParam.HasMore() {
+				currentParam = ansi.Param(parser.Params[i+1])
+				hasMoreThanOneSubParameter = true
+				i++
+			}
+
+			if hasMoreThanOneSubParameter {
+				str += " (Invalid multiple sub-parameters)"
 			}
 		case 5, 6:
 			str += "Blink"
