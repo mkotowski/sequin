@@ -41,6 +41,8 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 			if param.HasMore() {
 				// Handle underline styles
 				switch next := ansi.Param(parser.Params[i+1]); next.Param() {
+				case 0:
+					str += " disabled"
 				case 1:
 					str += " (Single)"
 				case 2:
@@ -51,7 +53,10 @@ func handleSgr(parser *ansi.Parser) (string, error) { //nolint:unparam
 					str += " (Dotted)"
 				case 5:
 					str += " (Dashed)"
+				default:
+					str += " (Unknown)"
 				}
+				i++
 			}
 		case 5, 6:
 			str += "Blink"
