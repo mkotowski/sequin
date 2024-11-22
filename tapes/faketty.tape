@@ -1,7 +1,7 @@
 Output faketty.gif
 
 Set Width 850
-Set Height 480
+Set Height 400
 
 Hide
 Type "cd sequin"
@@ -10,7 +10,7 @@ Type "clear"
 Enter
 Show
 
-Type "sequin -- git status -sb"
+Type "sequin -- ls -1 go.*"
 Sleep 350ms
 Enter
 Sleep 10s

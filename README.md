@@ -147,13 +147,13 @@ To generate golden files for your TUIs have a look at [`golden`][golden] and [`t
 
 ### Fake TTY - executing commands
 
-You can also execute commands directly in sequin using a fake TTY, for instance:
+You can also execute commands directly in sequin:
 
 ```bash
-sequin -- git status -sb
+sequin -- ls -1 go.*
 ```
 
-<p><img src="https://github.com/user-attachments/assets/444b8971-bd4f-41d1-abef-2c2b9f55ed88" width="450"></p>
+<p><img src="https://github.com/user-attachments/assets/efd9f511-130d-49e8-ba8f-31e1e3d86920" width="450"></p>
 
 ## Pro Mode: Syntax Highlighting for Raw Sequences
 
