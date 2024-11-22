@@ -1,7 +1,7 @@
 Output faketty.gif
 
 Set Width 850
-Set Height 470
+Set Height 480
 
 Hide
 Type "cd sequin"
