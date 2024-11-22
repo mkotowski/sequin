@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
 	"io"
 	"os"
@@ -22,6 +23,8 @@ const (
 var (
 	buf bytes.Buffer
 	raw bool
+	// Version as provided by goreleaser.
+	Version = ""
 )
 
 func main() {
@@ -57,6 +60,8 @@ sequin -- some command to execute
 		},
 	}
 	root.Flags().BoolVarP(&raw, "raw", "r", false, "raw mode (no explanation)")
+
+	root.Version = cmp.Or(Version, "unknown (built from source)")
 	return root
 }
 
