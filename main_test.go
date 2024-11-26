@@ -12,6 +12,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+var c0c1 = map[string]string{
+	// c0
+	"c0":  fmt.Sprintf("%s", func() string {
+		var c0codes string
+		for controlCode := 0x00; controlCode <= 0x1f; controlCode++ {
+			c0codes = fmt.Sprintf("%s%c", c0codes, controlCode)
+		}
+		return c0codes
+	}()),
+	// c1
+	"c1":  fmt.Sprintf("%s", func() string {
+			var controlCode byte
+			c1codes := []byte("")
+			for controlCode = 0x80; controlCode <= 0x9f; controlCode++ {
+				// Skip DCS, SOS, CSI, OSC, PM, and APC
+				switch controlCode {
+				case ansi.DCS, ansi.SOS, ansi.CSI, ansi.OSC, ansi.PM, ansi.APC:
+					continue
+				}
+				c1codes = append(c1codes, controlCode)
+			}
+			return string(c1codes[:])
+		}()),
+}
+
+var ascii =  map[string]string{
+	// space and del
+	"ascii": fmt.Sprintf(" %c", ansi.DEL),
+}
+
 var cursor = map[string]string{
 	// cursor
 	"save":                         ansi.SaveCursor,
@@ -212,6 +242,8 @@ var clipboard = map[string]string{
 
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
+		"c0c1":      c0c1,
+		"ascii":     ascii,
 		"cursor":    cursor,
 		"screen":    screen,
 		"line":      line,

@@ -1,0 +1,26 @@
+Ctrl \x80: Padding character
+Ctrl \x81: High octet preset
+Ctrl \x82: Break permitted here
+Ctrl \x83: No break here
+Ctrl \x84: Index
+Ctrl \x85: Next line
+Ctrl \x86: Start of selected area
+Ctrl \x87: End of selected area
+Ctrl \x88: Character tabulation set
+Ctrl \x89: Character tabulation with justification
+Ctrl \x8a: Line tabulation set
+Ctrl \x8b: Partial line forward
+Ctrl \x8c: Partial line backward
+Ctrl \x8d: Reverse line feed
+Ctrl \x8e: Single shift 2
+Ctrl \x8f: Single shift 3
+Ctrl \x91: Private use 1
+Ctrl \x92: Private use 2
+Ctrl \x93: Set transmit state
+Ctrl \x94: Cancel character
+Ctrl \x95: Message waiting
+Ctrl \x96: Start of guarded area
+Ctrl \x97: End of guarded area
+Ctrl \x99: Single graphic character introducer
+Ctrl \x9a: Single character introducer
+Ctrl \x9c: String terminator

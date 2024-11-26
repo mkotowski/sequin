@@ -96,16 +96,24 @@ func process(w *colorprofile.Writer, in []byte) error {
 		// OSC
 		s = strings.TrimPrefix(s, "\\x9d")
 		s = strings.TrimPrefix(s, "\\x1b]")
-		s = strings.TrimSuffix(s, "\\a")
+		// BEL
+		if !bytes.Equal(seq, []byte{ansi.BEL}) {
+			// Remove only if not a literal bell
+			s = strings.TrimSuffix(s, "\\a")
+		}
 		// APC
 		s = strings.TrimPrefix(s, "\\x9f")
 		s = strings.TrimPrefix(s, "\\x1b_")
 		// ESC
 		if !bytes.Equal(seq, []byte{ansi.ESC}) {
+			// Remove only if not a standalone ESC
 			s = strings.TrimPrefix(s, "\\x1b")
 		}
 		// ST
-		s = strings.TrimSuffix(s, "\\x9c")
+		if !bytes.Equal(seq, []byte{ansi.ST}) {
+			// Remove only if accompanied by a sequence introducer
+			s = strings.TrimSuffix(s, "\\x9c")
+		}
 		s = strings.TrimSuffix(s, "\\x1b\\\\")
 
 		_, _ = fmt.Fprintf(
@@ -264,6 +272,10 @@ var ctrlCodes = map[byte]string{
 	29: "Group separator",
 	30: "Record separator",
 	31: "Unit separator",
+
+	// RFC 20, section 4.1 "Control Characters" includes DEL with the note:
+	// "In the strict sense, DEL is not a control character."
+	127: "Delete",
 
 	// C1
 	0x80: "Padding character",
