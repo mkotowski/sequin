@@ -97,6 +97,12 @@ func process(w *colorprofile.Writer, in []byte) error {
 		s = strings.TrimPrefix(s, "\\x9d")
 		s = strings.TrimPrefix(s, "\\x1b]")
 		s = strings.TrimSuffix(s, "\\a")
+		// SOS
+		s = strings.TrimPrefix(s, "\\x98")
+		s = strings.TrimPrefix(s, "\\x1bX")
+		// PM
+		s = strings.TrimPrefix(s, "\\x9e")
+		s = strings.TrimPrefix(s, "\\x1b^")
 		// APC
 		s = strings.TrimPrefix(s, "\\x9f")
 		s = strings.TrimPrefix(s, "\\x1b_")
@@ -108,19 +114,52 @@ func process(w *colorprofile.Writer, in []byte) error {
 		s = strings.TrimSuffix(s, "\\x9c")
 		s = strings.TrimSuffix(s, "\\x1b\\\\")
 
-		_, _ = fmt.Fprintf(
-			w,
-			"%s%s%s",
-			t.kindStyle(kind),
-			t.sequence.Render(s),
-			t.separator,
-		)
+		_, _ = fmt.Fprintf(w, "%s", t.kindStyle(kind))
 
 		switch kind {
 		case "Ctrl":
-			_, _ = fmt.Fprintln(w, t.explanation.Render(ctrlCodes[seq[0]]))
+			_, _ = fmt.Fprintf(
+				w,
+				"%s%s%s\n",
+				t.sequence.Render(s),
+				t.separator,
+				t.explanation.Render(ctrlCodes[seq[0]]),
+			)
+
+		case "PM":
+			_, _ = fmt.Fprintf(
+				w,
+				"%s%s\n",
+				t.separator,
+				t.explanation.Render(fmt.Sprintf("Privacy message %q", s)),
+			)
+
+		case "SOS":
+			_, _ = fmt.Fprintf(
+				w,
+				"%s%s\n",
+				t.separator,
+				t.explanation.Render(fmt.Sprintf("Control string %q", s)),
+			)
+
 		case "":
-			_, _ = fmt.Fprintf(w, "Unknown %q\n", seq)
+			_, _ = fmt.Fprintf(
+				w,
+				"%s%sUnknown %q\n",
+				t.sequence.Render(s),
+				t.separator,
+				seq,
+			)
+
+		default:
+			// For sequences with own handlers print only the kind and the sequence.
+			// Explanation will be provided by handlers themselves:
+			_, _ = fmt.Fprintf(
+				w,
+				"%s%s",
+				t.sequence.Render(s),
+				t.separator,
+			)
 		}
 	}
 
@@ -177,6 +216,14 @@ func process(w *colorprofile.Writer, in []byte) error {
 			flushPrint()
 			seqPrint("OSC", seq)
 			handle(oscHandlers, p)
+
+		case ansi.HasPmPrefix(seq):
+			flushPrint()
+			seqPrint("PM", seq)
+
+		case ansi.HasSosPrefix(seq):
+			flushPrint()
+			seqPrint("SOS", seq)
 
 		case ansi.HasApcPrefix(seq):
 			flushPrint()
