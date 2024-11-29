@@ -1,1 +1,1 @@
- CSI 48;5;255;38;5;255;58;5;255m: Background color: 255, Foreground color: 255, Underline color: 255
+ CSI 48;5;255;38;5;255;58;5;255m: ANSI256 background color: 255 (#EEEEEE), ANSI256 foreground color: 255 (#EEEEEE), ANSI256 underline color: 255 (#EEEEEE)
