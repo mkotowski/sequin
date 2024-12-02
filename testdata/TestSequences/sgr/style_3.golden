@@ -1,1 +1,1 @@
- CSI 6;42;92;58;5;4m: Blink, ANSI background color: Green, Bright ANSI foreground color: Green, ANSI256 underline color: 4 (Blue)
+ CSI 6;42;92;58;5;4m: Blink, ANSI background color: Green, ANSI foreground color: Bright Green, ANSI256 underline color: 4 (Blue)
