@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"image/color"
 
 	"github.com/charmbracelet/x/ansi"
@@ -80,23 +81,28 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		case 29:
 			str += "No crossed-out"
 		case 30, 31, 32, 33, 34, 35, 36, 37:
-			str += fmt.Sprintf("Foreground color: %s", basicColors[param.Param(0)-30])
+			str += fmt.Sprintf("ANSI foreground color: %s", basicColors[param.Param(0)-30])
 		case 38:
-			str += fmt.Sprintf("Foreground color: %d", readColor(&i, params))
+			c := readColor(&i, params)
+			str += fmt.Sprintf("%s foreground color: %s", getColorType(c), getColorLabel(c))
 		case 39:
 			str += "Default foreground color"
 		case 40, 41, 42, 43, 44, 45, 46, 47:
-			str += fmt.Sprintf("Background color: %s", basicColors[param.Param(0)-40])
+			str += fmt.Sprintf("ANSI background color: %s", basicColors[param.Param(0)-40])
 		case 48:
-			str += fmt.Sprintf("Background color: %d", readColor(&i, params))
+			c := readColor(&i, params)
+			str += fmt.Sprintf("%s background color: %s", getColorType(c), getColorLabel(c))
 		case 49:
 			str += "Default background color"
-		case 58, 59:
-			str += fmt.Sprintf("Underline color: %d", readColor(&i, params))
+		case 58:
+			c := readColor(&i, params)
+			str += fmt.Sprintf("%s underline color: %s", getColorType(c), getColorLabel(c))
+		case 59:
+			str += "Default underline color"
 		case 90, 91, 92, 93, 94, 95, 96, 97:
-			str += fmt.Sprintf("Bright foreground color: %s", basicColors[param.Param(0)-90])
+			str += fmt.Sprintf("Bright ANSI foreground color: %s", basicColors[param.Param(0)-90])
 		case 100, 101, 102, 103, 104, 105, 106, 107:
-			str += fmt.Sprintf("Bright background color: %s", basicColors[param.Param(0)-100])
+			str += fmt.Sprintf("Bright ANSI background color: %s", basicColors[param.Param(0)-100])
 		}
 	}
 
@@ -114,6 +120,39 @@ var basicColors = map[int]string{
 	7: "White",
 }
 
+func getColorLabel(c ansi.Color) string {
+	r, g, b, _ := c.RGBA()
+	hexString := fmt.Sprintf("#%.2X%.2X%.2X", r >> 8, g >> 8, b >> 8)
+	switch c := c.(type) {
+	case ansi.ExtendedColor:
+		paletteID := int(c)
+		// First 16 colors are the same as ANSI
+		if paletteID < 8 {
+			return fmt.Sprintf("%d (%s)", c, basicColors[paletteID])
+		} else if paletteID >= 8 && paletteID < 16 {
+			return fmt.Sprintf("%d (Bright %s)", c, strings.ToLower(basicColors[paletteID-8]))
+		}
+		return fmt.Sprintf("%d (%s)", c, hexString)
+	case ansi.TrueColor, color.Color:
+		return hexString
+	default:
+		return "Unknown color"
+	}
+}
+
+func getColorType(c ansi.Color) string {
+	switch c.(type) {
+	case ansi.BasicColor:
+		return "ANSI"
+	case ansi.ExtendedColor:
+		return "ANSI256"
+	case ansi.TrueColor, color.Color:
+		return "24-bit RGB"
+	default:
+		return "Unknown"
+	}
+}
+
 //nolint:mnd
 func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 	i := *idxp
@@ -123,7 +162,7 @@ func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 	}
 	// Note: we accept both main and subparams here
 	switch param := params[i+1]; param.Param(0) {
-	case 2: // RGB
+	case 2: // 24-bit RGB (truecolor, also called direct color)
 		if i > paramsLen-4 {
 			return
 		}
@@ -134,7 +173,7 @@ func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
 			A: 0xff,
 		}
 		*idxp += 4
-	case 5: // 256 colors
+	case 5: // ANSI256: Palette of 256 colors
 		if i > paramsLen-2 {
 			return
 		}
