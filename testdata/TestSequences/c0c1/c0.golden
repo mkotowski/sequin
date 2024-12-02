@@ -1,0 +1,32 @@
+Ctrl \x00: Null
+Ctrl \x01: Start of heading
+Ctrl \x02: Start of text
+Ctrl \x03: End of text
+Ctrl \x04: End of transmission
+Ctrl \x05: Enquiry
+Ctrl \x06: Acknowledge
+Ctrl \a: Bell
+Ctrl \b: Backspace
+Ctrl \t: Horizontal tab
+Ctrl \n: Line feed
+Ctrl \v: Vertical tab
+Ctrl \f: Form feed
+Ctrl \r: Carriage return
+Ctrl \x0e: Shift out
+Ctrl \x0f: Shift in
+Ctrl \x10: Data link escape
+Ctrl \x11: Device control 1
+Ctrl \x12: Device control 2
+Ctrl \x13: Device control 3
+Ctrl \x14: Device control 4
+Ctrl \x15: Negative acknowledge
+Ctrl \x16: Synchronous idle
+Ctrl \x17: End of transmission block
+Ctrl \x18: Cancel
+Ctrl \x19: End of medium
+Ctrl \x1a: Substitute
+Ctrl ESC: Escape
+Ctrl \x1c: File separator
+Ctrl \x1d: Group separator
+Ctrl \x1e: Record separator
+Ctrl \x1f: Unit separator
