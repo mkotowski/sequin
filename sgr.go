@@ -122,12 +122,12 @@ var basicColors = map[int]string{
 
 func getColorLabel(c ansi.Color) string {
 	r, g, b, _ := c.RGBA()
-	hexString := fmt.Sprintf("#%.2X%.2X%.2X", r>>8, g>>8, b>>8)
+	hexString := fmt.Sprintf("#%.2X%.2X%.2X", r>>8, g>>8, b>>8) //nolint:mnd
 	switch c := c.(type) {
 	case ansi.ExtendedColor:
 		paletteID := int(c)
 		// First 16 colors are the same as ANSI
-		if paletteID < 8 {
+		if paletteID < 8 { //nolint:mnd
 			return fmt.Sprintf("%d (%s)", c, basicColors[paletteID])
 		} else if paletteID >= 8 && paletteID < 16 {
 			return fmt.Sprintf("%d (Bright %s)", c, strings.ToLower(basicColors[paletteID-8]))
