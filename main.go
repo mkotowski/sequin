@@ -67,7 +67,7 @@ sequin -- some command to execute
 func process(w *colorprofile.Writer, in []byte) error {
 	var t theme
 	switch strings.ToLower(os.Getenv("SEQUIN_THEME")) {
-	case "ansi", "base16", "carlos", "secret_carlos", "matchy":
+	case "ansi", "carlos", "secret_carlos", "matchy":
 		t = base16Theme(false)
 	default:
 		hasDarkBG := lipgloss.HasDarkBackground(os.Stdin, os.Stdout)
