@@ -13,7 +13,7 @@ func handleLine(p *ansi.Parser) (string, error) {
 		count = n
 	}
 
-	switch p.Cmd() {
+	switch p.Command() {
 	case 'K':
 		switch count {
 		case 0:

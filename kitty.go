@@ -46,8 +46,8 @@ func handleKitty(p *ansi.Parser) (string, error) {
 		first = n
 	}
 
-	cmd := p.Cmd()
-	switch cmd.Marker() {
+	cmd := ansi.Cmd(p.Command())
+	switch cmd.Prefix() {
 	case '?':
 		return "Request Kitty keyboard", nil
 	case '>':

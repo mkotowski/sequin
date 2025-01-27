@@ -14,7 +14,7 @@ func handleTitle(p *ansi.Parser) (string, error) {
 		// Invalid, ignore
 		return "", errInvalid
 	}
-	switch p.Cmd() {
+	switch p.Command() {
 	case 0:
 		return fmt.Sprintf("Set icon name and window title to %q", parts[1]), nil
 	case 1:

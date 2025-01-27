@@ -13,8 +13,8 @@ func handleScreen(p *ansi.Parser) (string, error) {
 		count = n
 	}
 
-	cmd := p.Cmd()
-	switch cmd.Command() {
+	cmd := ansi.Cmd(p.Command())
+	switch cmd.Final() {
 	case 'J':
 		switch count {
 		case 0:

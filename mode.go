@@ -12,12 +12,12 @@ func handleMode(p *ansi.Parser) (string, error) {
 		m = n
 	}
 	mode := modeDesc(m)
-	cmd := p.Cmd()
+	cmd := ansi.Cmd(p.Command())
 	private := ""
-	if cmd.Marker() == '?' {
+	if cmd.Prefix() == '?' {
 		private = "private "
 	}
-	switch cmd.Command() {
+	switch cmd.Final() {
 	case 'p':
 		// DECRQM - Request Mode
 		return fmt.Sprintf("Request %smode %q", private, mode), nil

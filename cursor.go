@@ -13,9 +13,9 @@ func handleCursor(p *ansi.Parser) (string, error) {
 		count = n
 	}
 
-	cmd := p.Cmd()
-	isPrivate := cmd.Marker() == '?'
-	switch cmd.Command() {
+	cmd := ansi.Cmd(p.Command())
+	isPrivate := cmd.Prefix() == '?'
+	switch cmd.Final() {
 	case 'A':
 		// CUU - Cursor Up
 		return fmt.Sprintf("Cursor up %d", default1(count)), nil

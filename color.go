@@ -22,7 +22,7 @@ func handleTerminalColor(p *ansi.Parser) (string, error) {
 	} else {
 		buf += "Set"
 	}
-	switch p.Cmd() {
+	switch p.Command() {
 	case 10:
 		buf += " foreground color"
 	case 11:
@@ -44,7 +44,7 @@ func handleResetTerminalColor(p *ansi.Parser) (string, error) {
 		return "", errInvalid
 	}
 	var buf string
-	switch p.Cmd() {
+	switch p.Command() {
 	case 110:
 		buf += "Reset foreground color"
 	case 111:

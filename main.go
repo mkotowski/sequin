@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	markerShift   = parser.MarkerShift
+	markerShift   = parser.PrefixShift
 	intermedShift = parser.IntermedShift
 )
 
@@ -188,7 +188,7 @@ func process(w *colorprofile.Writer, in []byte) error {
 			return
 		}
 
-		handler, ok := reg[int(p.Cmd())]
+		handler, ok := reg[p.Command()]
 		if !ok {
 			_, _ = fmt.Fprintln(w, t.error.Render(errUnhandled.Error()))
 			return
