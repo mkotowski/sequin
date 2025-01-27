@@ -162,7 +162,6 @@ func readColor(idxp *int, params ansi.Params) ansi.Color {
 	n := ansi.ReadStyleColor(params, &c)
 	if n > 0 {
 		*idxp += n - 1 // we increment the index in the loop
-		return c
 	}
-	return nil
+	return c
 }
