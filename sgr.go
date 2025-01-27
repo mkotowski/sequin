@@ -27,7 +27,7 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		// TODO: add more parameters and options
 		switch param.Param(0) {
 		case 0:
-			str = "Reset style"
+			str += "Reset style"
 		case 1:
 			str += "Bold"
 		case 2:
@@ -83,19 +83,19 @@ func handleSgr(p *ansi.Parser) (string, error) { //nolint:unparam
 		case 30, 31, 32, 33, 34, 35, 36, 37:
 			str += fmt.Sprintf("ANSI foreground color: %s", basicColors[param.Param(0)-30])
 		case 38:
-			c := readColor(&i, params)
+			c := readColor(&i, params[i:])
 			str += fmt.Sprintf("%s foreground color: %s", getColorType(c), getColorLabel(c))
 		case 39:
 			str += "Default foreground color"
 		case 40, 41, 42, 43, 44, 45, 46, 47:
 			str += fmt.Sprintf("ANSI background color: %s", basicColors[param.Param(0)-40])
 		case 48:
-			c := readColor(&i, params)
+			c := readColor(&i, params[i:])
 			str += fmt.Sprintf("%s background color: %s", getColorType(c), getColorLabel(c))
 		case 49:
 			str += "Default background color"
 		case 58:
-			c := readColor(&i, params)
+			c := readColor(&i, params[i:])
 			str += fmt.Sprintf("%s underline color: %s", getColorType(c), getColorLabel(c))
 		case 59:
 			str += "Default underline color"
@@ -121,6 +121,9 @@ var basicColors = map[int]string{
 }
 
 func getColorLabel(c ansi.Color) string {
+	if c == nil {
+		return ""
+	}
 	r, g, b, _ := c.RGBA()
 	hexString := fmt.Sprintf("#%.2X%.2X%.2X", r>>8, g>>8, b>>8) //nolint:mnd
 	switch c := c.(type) {
@@ -154,49 +157,12 @@ func getColorType(c ansi.Color) string {
 }
 
 //nolint:mnd
-func readColor(idxp *int, params []ansi.Parameter) (c ansi.Color) {
-	i := *idxp
-	paramsLen := len(params)
-	if i > paramsLen-1 {
-		return
+func readColor(idxp *int, params ansi.Params) ansi.Color {
+	var c color.Color
+	n := ansi.ReadStyleColor(params, &c)
+	if n > 0 {
+		*idxp += n - 1 // we increment the index in the loop
+		return c
 	}
-	// Note: we accept both main and subparams here
-	switch param := params[i+1]; param.Param(0) {
-	case 2: // 24-bit RGB (truecolor, also called direct color)
-		if i > paramsLen-4 {
-			return
-		}
-
-		inc := 4
-		if i < paramsLen-5 && param.HasMore() &&
-			params[i+2].HasMore() &&
-			params[i+3].HasMore() &&
-			params[i+4].HasMore() {
-			// ignore colorspace id i.e. params[i+2]
-			// see ITU T.416 for more info
-			c = color.RGBA{
-				R: uint8(params[i+3].Param(0)), //nolint:gosec
-				G: uint8(params[i+4].Param(0)), //nolint:gosec
-				B: uint8(params[i+5].Param(0)), //nolint:gosec
-				A: 0xff,
-			}
-			inc = 5
-		} else {
-			c = color.RGBA{
-				R: uint8(params[i+2].Param(0)), //nolint:gosec
-				G: uint8(params[i+3].Param(0)), //nolint:gosec
-				B: uint8(params[i+4].Param(0)), //nolint:gosec
-				A: 0xff,
-			}
-		}
-
-		*idxp += inc
-	case 5: // ANSI256: Palette of 256 colors
-		if i > paramsLen-2 {
-			return
-		}
-		c = ansi.ExtendedColor(params[i+2].Param(0)) //nolint:gosec
-		*idxp += 2
-	}
-	return
+	return nil
 }
