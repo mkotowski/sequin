@@ -243,6 +243,11 @@ var clipboard = map[string]string{
 	"invalid":         strings.Replace(ansi.SetPrimaryClipboard("hello"), "=", "", 1),
 }
 
+var keypad = map[string]string{
+	"normal keypad":      ansi.KeypadNumericMode,
+	"application keypad": ansi.KeypadApplicationMode,
+}
+
 func TestSequences(t *testing.T) {
 	for name, table := range map[string]map[string]string{
 		"c0c1":      c0c1,
@@ -260,6 +265,7 @@ func TestSequences(t *testing.T) {
 		"termcolor": termcolor,
 		"clipboard": clipboard,
 		"others":    others,
+		"keypad":    keypad,
 	} {
 		t.Run(name, func(t *testing.T) {
 			for name, input := range table {
